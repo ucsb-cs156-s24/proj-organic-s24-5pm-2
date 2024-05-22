@@ -23,6 +23,9 @@ export default function HomePage() {
                     <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">
                         {greeting}, cgaucho
                     </h1>
+                    <h2 data-testid="homePage-info">
+                     This app is intended as a replacement for the <a href="https://ucsb-cs-github-linker.herokuapp.com">ucsb-cs-github-linker</a> app used in many courses at UCSB, as well as some courses at other universities. 
+                    </h2>
                 </BasicLayout>
             </div>
         );
@@ -35,6 +38,9 @@ export default function HomePage() {
                 <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">
                     {greeting}, {currentUser.root.user.githubLogin}
                 </h1>
+                <h2 data-testid="homePage-info">
+                     This app is intended as a replacement for the <a href="https://ucsb-cs-github-linker.herokuapp.com">ucsb-cs-github-linker</a> app used in many courses at UCSB, as well as some courses at other universities. 
+                </h2>
             </BasicLayout>
         </div>
     );
