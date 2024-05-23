@@ -16,6 +16,10 @@ import SchoolIndexPage from "main/pages/SchoolIndexPage";
 import CoursesCreatePage from "main/pages/CoursesCreatePage";
 import CourseIndexPage from "main/pages/CourseIndexPage";
 
+import StaffCreatePage from "main/pages/StaffCreatePage";
+import StaffEditPage from "main/pages/StaffEditPage";
+import StaffIndexPage from "main/pages/StaffIndexPage";
+
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import NotFoundPage from "main/pages/NotFoundPage";
 
@@ -42,6 +46,14 @@ function App() {
       <Route path="/courses/create" element={<CoursesCreatePage />} />
       <Route path="/courses" element={<CourseIndexPage />} />
       <Route path="/courses/edit/:id" element={<CoursesEditPage />} />
+    </>
+  ) : null;
+
+  const staffRoutes = (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_ADMIN")) ? (
+    <>
+      <Route path="/staff/create" element={<StaffCreatePage />} />
+      <Route path="/staff" element={<StaffIndexPage />} />
+      <Route path="/staff/edit/:id" element={<StaffEditPage />} />
     </>
   ) : null;
 
@@ -84,6 +96,7 @@ function App() {
           {adminRoutes}
           {userRoutes}
           {courseRoutes}
+          {staffRoutes}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       )}
