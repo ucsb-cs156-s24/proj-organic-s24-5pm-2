@@ -34,7 +34,7 @@ function App() {
 
   const userRoutes = hasRole(currentUser, "ROLE_USER") ? (
     <>
-      <Route path="/schools" element={<SchoolIndexPage />} />
+      
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/courses" element={<CourseIndexPage />} />
     </>
