@@ -37,21 +37,6 @@ function StaffForm({ initialContents, submitAction, buttonLabel = "Create" }) {
         )}
         <Col>
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="courseId">course ID</Form.Label>
-            <Form.Control
-              data-testid="StaffForm-courseId"
-              id="courseId"
-              type="text"
-              isInvalid={Boolean(errors.courseId)}
-              {...register("courseId", { required: true })}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.courseId && 'courseId is required.'}
-            </Form.Control.Feedback>
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group className="mb-3">
             <Form.Label htmlFor="githubId">github ID</Form.Label>
             <Form.Control
               data-testid="StaffForm-githubId"
