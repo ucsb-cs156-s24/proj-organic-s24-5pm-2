@@ -13,8 +13,14 @@ export default function HomePage() {
         if (hour <= 18) return "Good afternoon";
         return "Good evening";
     };
-
+    let user;
     const greeting = getPartOfDayGreeting();
+    if (!currentUser || !currentUser.loggedIn)  {
+         user = ""
+    }
+    else {
+         user = currentUser.root.user.githubLogin
+    }
 
     if (!currentUser || !currentUser.loggedIn) {
         return (
@@ -36,7 +42,7 @@ export default function HomePage() {
         <div data-testid={"HomePage-main-div"}>
             <BasicLayout>
                 <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">
-                    {greeting}, {currentUser.root.user.githubLogin}
+                    {greeting}, {user}
                 </h1>
                 <h2 data-testid="homePage-info">
                      This app is intended as a replacement for the <a href="https://ucsb-cs-github-linker.herokuapp.com">ucsb-cs-github-linker</a> app used in many courses at UCSB, as well as some courses at other universities. 
