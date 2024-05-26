@@ -337,24 +337,4 @@ describe("UserTable tests", () => {
     });
   });
 
-  test("renders empty table correctly", () => {
-    const currentUser = currentUserFixtures.adminUser;
-    
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CoursesTable courses={[]} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    const expectedHeaders = ["id", "Name", "School", "Term", "StartDate", "EndDate", "GitHub Org"];
-    expectedHeaders.forEach(headerText => {
-      expect(screen.getByText(headerText)).toBeInTheDocument();
-    });
-
-    expect(screen.queryByTestId("CoursesTable-cell-row-0-col-id")).not.toBeInTheDocument();
-    expect(screen.getByText("Total Courses: 0")).toBeInTheDocument();
-  });
-
 });

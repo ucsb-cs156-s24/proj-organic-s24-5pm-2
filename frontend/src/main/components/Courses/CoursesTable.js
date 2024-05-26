@@ -38,15 +38,22 @@ import React from "react";
      const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
 
      const columns = [
-         {
-             Header: 'id',
-             accessor: 'id',
-             Cell: ({ cell }) => (
-                <a onClick={() => idClickCallback(cell)} style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" }}>
+        {
+            Header: 'id',
+            accessor: 'id',
+            Cell: ({ cell }) => (
+                <a 
+                    href={`/courses/${cell.value}`}
+                    onClick={(e) => {
+                        e.preventDefault(); 
+                        idClickCallback(cell);
+                    }}
+                    style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" }}
+                >
                     {cell.value}
                 </a>
             )
-         },
+        },
          {
              Header: 'Name',
              accessor: 'name',
