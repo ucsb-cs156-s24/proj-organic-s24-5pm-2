@@ -9,6 +9,10 @@ import React from "react";
 
      const navigate = useNavigate();
 
+     const idClickCallback = (cell) => {
+        navigate(`/courses/${cell.row.values.id}`);
+    };
+
      const joinCallback = (cell) => {
         navigate(`/courses/join/${cell.row.values.id}`);
     };
@@ -37,6 +41,11 @@ import React from "react";
          {
              Header: 'id',
              accessor: 'id',
+             Cell: ({ cell }) => (
+                <a onClick={() => idClickCallback(cell)} style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" }}>
+                    {cell.value}
+                </a>
+            )
          },
          {
              Header: 'Name',
