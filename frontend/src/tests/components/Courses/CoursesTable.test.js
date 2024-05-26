@@ -294,4 +294,67 @@ describe("UserTable tests", () => {
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
+  test("Has the expected column headers and renders hyperlinks for course IDs", () => {
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const expectedHeaders = ["id", "Name", "School", "Term", "StartDate", "EndDate", "GitHub Org"];
+    expectedHeaders.forEach(headerText => {
+      expect(screen.getByText(headerText)).toBeInTheDocument();
+    });
+
+    coursesFixtures.threeCourses.forEach((course, index) => {
+      const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
+      expect(idLink.tagName).toBe('A'); // Checks if the ID is rendered as a link
+      expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
+    });
+  });
+
+  test("Clicking on ID hyperlink navigates correctly", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      coursesFixtures.threeCourses.forEach((course, index) => {
+        const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
+        fireEvent.click(idLink);
+        expect(mockedNavigate).toHaveBeenCalledWith(`/courses/${course.id}`);
+      });
+    });
+  });
+
+  test("renders empty table correctly", () => {
+    const currentUser = currentUserFixtures.adminUser;
+    
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesTable courses={[]} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const expectedHeaders = ["id", "Name", "School", "Term", "StartDate", "EndDate", "GitHub Org"];
+    expectedHeaders.forEach(headerText => {
+      expect(screen.getByText(headerText)).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId("CoursesTable-cell-row-0-col-id")).not.toBeInTheDocument();
+    expect(screen.getByText("Total Courses: 0")).toBeInTheDocument();
+  });
+
 });

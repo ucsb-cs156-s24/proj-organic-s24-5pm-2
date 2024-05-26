@@ -47,13 +47,6 @@ function App() {
     </>
   ) : null;
 
-  /*const courseShowRoutes = (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) ? (
-    <>
-      <Route path="/courses/:id" element={<CoursesShowPage />} />
-    </>
-  ) : null;
-  */
-
   const homeRoute = (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER")) 
     ? <Route path="/" element={<HomePage />} /> 
     : <Route path="/" element={<LoginPage />} />;

@@ -22,12 +22,12 @@ export default function CoursesShowPage() {
             },
     []
         );
-    const courses = [course]; // Ensure data is in an array
+    const courses = [course]; 
 
     return (
         <BasicLayout>
             <div className="pt-2">
-                <h1>Course Details</h1>
+                <h1>Individual Course Details</h1>
                 <CoursesTable courses={courses} currentUser={currentUser} />
             </div>
         </BasicLayout>
