@@ -43,14 +43,16 @@ function App() {
       <Route path="/courses/create" element={<CoursesCreatePage />} />
       <Route path="/courses" element={<CourseIndexPage />} />
       <Route path="/courses/edit/:id" element={<CoursesEditPage />} />
+      <Route path="/courses/:id" element={<CoursesShowPage />} />
     </>
   ) : null;
 
-  const courseShowRoutes = (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) ? (
+  /*const courseShowRoutes = (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) ? (
     <>
       <Route path="/courses/:id" element={<CoursesShowPage />} />
     </>
   ) : null;
+  */
 
   const homeRoute = (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER")) 
     ? <Route path="/" element={<HomePage />} /> 
@@ -91,7 +93,6 @@ function App() {
           {adminRoutes}
           {userRoutes}
           {courseRoutes}
-          {courseShowRoutes}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       )}
