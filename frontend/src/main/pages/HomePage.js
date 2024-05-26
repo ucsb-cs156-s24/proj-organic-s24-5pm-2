@@ -13,27 +13,33 @@ export default function HomePage() {
         if (hour <= 18) return "Good afternoon";
         return "Good evening";
     };
-
+    let user;
     const greeting = getPartOfDayGreeting();
-
-    if (!currentUser || !currentUser.loggedIn) {
-        return (
-            <div data-testid={"HomePage-main-div"}>
-                <BasicLayout>
-                    <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">
-                        {greeting}, cgaucho
-                    </h1>
-                </BasicLayout>
-            </div>
-        );
+    if (!currentUser || !currentUser.loggedIn){
+        user = "cgaucho";
     }
+    else{
+        user = currentUser.root.user.githubLogin;
+    }
+
+    // if (!currentUser || !currentUser.loggedIn) {
+    //     return (
+    //         <div data-testid={"HomePage-main-div"}>
+    //             <BasicLayout>
+    //                 <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">
+    //                     {greeting}, cgaucho
+    //                 </h1>
+    //             </BasicLayout>
+    //         </div>
+    //     );
+    // }
 
     // Stryker disable all : TODO: restructure this code to avoid the need for this disable
     return (
         <div data-testid={"HomePage-main-div"}>
             <BasicLayout>
                 <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">
-                    {greeting}, {currentUser.root.user.githubLogin}
+                    {greeting}, {user}
                 </h1>
             </BasicLayout>
         </div>
