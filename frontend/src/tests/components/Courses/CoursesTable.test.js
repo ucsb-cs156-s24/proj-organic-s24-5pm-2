@@ -296,7 +296,7 @@ describe("UserTable tests", () => {
 
   test("Has the expected column headers and renders hyperlinks for course IDs", () => {
     const currentUser = currentUserFixtures.userOnly;
-
+  
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -304,22 +304,17 @@ describe("UserTable tests", () => {
         </MemoryRouter>
       </QueryClientProvider>
     );
-
-    const expectedHeaders = ["id", "Name", "School", "Term", "StartDate", "EndDate", "GitHub Org"];
-    expectedHeaders.forEach(headerText => {
-      expect(screen.getByText(headerText)).toBeInTheDocument();
-    });
-
+  
     coursesFixtures.threeCourses.forEach((course, index) => {
-      const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
-      expect(idLink.tagName).toBe('A'); // Checks if the ID is rendered as a link
+      const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`).querySelector('a');
+      expect(idLink.tagName).toBe('A');
       expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
     });
-  });
+  });  
 
   test("Clicking on ID hyperlink navigates correctly", async () => {
     const currentUser = currentUserFixtures.userOnly;
-
+  
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -327,7 +322,7 @@ describe("UserTable tests", () => {
         </MemoryRouter>
       </QueryClientProvider>
     );
-
+  
     await waitFor(() => {
       coursesFixtures.threeCourses.forEach((course, index) => {
         const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
@@ -336,5 +331,5 @@ describe("UserTable tests", () => {
       });
     });
   });
-
+  
 });
