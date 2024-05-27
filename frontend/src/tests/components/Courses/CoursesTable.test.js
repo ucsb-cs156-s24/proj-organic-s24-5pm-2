@@ -330,4 +330,25 @@ describe("UserTable tests", () => {
     expect(mockedNavigate).toHaveBeenCalledWith(`/courses/${coursesFixtures.threeCourses[0].id}`);
   });
   
+  test('ID link has correct styles', () => {
+    const currentUser = currentUserFixtures.userOnly;
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+          <MemoryRouter>
+              <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+          </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const idCell = screen.getByTestId(`CoursesTable-cell-row-0-col-id`);
+    const idLink = within(idCell).getByRole('link');
+
+    expect(idLink).toHaveStyle({
+        cursor: "pointer",
+        color: "#007bff",
+        textDecoration: "underline"
+    });
+  });
+
+
 });
