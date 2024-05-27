@@ -30,9 +30,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.18);
     -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-    transition: box-shadow 0.3s ease, -webkit-transform 0.3s ease;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, -webkit-transform 0.3s ease;
     position: relative;
     overflow: hidden;
   }
@@ -49,37 +47,22 @@ body {
     background-size: 50% 50%, 50% 50%;
     background-position: 0 0, 100% 0, 100% 100%, 0 100%;
     background-image: linear-gradient(#007bff, #007bff), linear-gradient(#007bff, #007bff), linear-gradient(#007bff, #007bff), linear-gradient(#007bff, #007bff);
-    -webkit-animation: rotate 6s linear infinite;
-            animation: rotate 6s linear infinite;
+    animation: rotate 6s linear infinite;
     z-index: 0;
     opacity: 0.05;
   }
   
   .login-card:hover {
-    -webkit-transform: translateY(-10px);
-            transform: translateY(-10px);
+    transform: translateY(-10px);
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12), 0 10px 20px rgba(0, 0, 0, 0.08);
-  }
-  
-  @-webkit-keyframes rotate {
-    0% {
-      -webkit-transform: rotate(0deg);
-              transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-              transform: rotate(360deg);
-    }
   }
   
   @keyframes rotate {
     0% {
-      -webkit-transform: rotate(0deg);
-              transform: rotate(0deg);
+      transform: rotate(0deg);
     }
     100% {
-      -webkit-transform: rotate(360deg);
-              transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
   
@@ -89,8 +72,7 @@ body {
   }
   
 .login-card:hover {
-  -webkit-transform: translateY(-5px);
-          transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 .login-card .card-title {
@@ -119,15 +101,12 @@ body {
   font-weight: 500;
   letter-spacing: 0.05rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, -webkit-transform 0.2s ease;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  transition: background-color 0.3s ease, transform 0.2s ease, -webkit-transform 0.2s ease;
 }
 
 .login-btn:hover, .login-btn:focus {
   background-color: #0056b3;
-  -webkit-transform: scale(1.02);
-          transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 body {
@@ -138,4 +117,4 @@ body {
 
   
 
-/*# sourceMappingURL=main.7eebeca6.css.map*/
+/*# sourceMappingURL=main.2e244ed1.css.map*/
