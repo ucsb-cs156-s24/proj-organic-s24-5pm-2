@@ -64,12 +64,10 @@ describe("CoursesShowPage tests", () => {
 
 
     test("renders course correctly for admin", async () => {
-        // arrange
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
 
-        // act
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -78,18 +76,15 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
         await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
 
     });
 
     test("renders course correctly for instructor", async () => {
-        // arrange
         setupInstructorUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
 
-        // act
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -98,19 +93,18 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
         await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
 
     });
 
     test("renders empty table when backend unavailable, admin", async () => {
-        // arrange
+     
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).timeout();
         const restoreConsole = mockConsole();
 
-        // act
+        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -119,7 +113,7 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
+       
         await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
 
         restoreConsole();
@@ -128,13 +122,13 @@ describe("CoursesShowPage tests", () => {
     });
 
     test("renders empty table when backend unavailable, instructor", async () => {
-        // arrange
+       
         setupInstructorUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).timeout();
         const restoreConsole = mockConsole();
 
-        // act
+       
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -143,7 +137,7 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
+       
         await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
 
         restoreConsole();
@@ -152,13 +146,13 @@ describe("CoursesShowPage tests", () => {
     });
 
     test("what happens when you click delete, admin", async () => {
-        // arrange
+        
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
         axiosMock.onDelete("/api/courses/delete").reply(200, "Course with id 1 was deleted");
 
-        // act
+        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -167,7 +161,7 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
+       
         await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toBeInTheDocument(); });
 
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
@@ -175,22 +169,22 @@ describe("CoursesShowPage tests", () => {
         const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();
 
-        // act
+       
         fireEvent.click(deleteButton);
 
-        // assert
+       
         await waitFor(() => { expect(mockToast).toBeCalledWith("Course with id 1 was deleted") });
 
     });
 
     test("what happens when you click delete, instructor", async () => {
-        // arrange
+        
         setupInstructorUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
         axiosMock.onDelete("/api/courses/delete").reply(200, "Course with id 1 was deleted");
 
-        // act
+        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -199,7 +193,7 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
+       
         await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toBeInTheDocument(); });
 
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
@@ -207,21 +201,21 @@ describe("CoursesShowPage tests", () => {
         const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();
 
-        // act
+        
         fireEvent.click(deleteButton);
 
-        // assert
+        
         await waitFor(() => { expect(mockToast).toBeCalledWith("Course with id 1 was deleted") });
 
     });
 
     test("tests buttons for editing do not show up for user", async () => {
-        // arrange
+        
         setupUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
 
-        // act
+        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -230,7 +224,7 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        // assert
+       
         await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toBeInTheDocument(); });
 
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");

@@ -57,7 +57,7 @@ describe("UserTable tests", () => {
     const deleteButton = screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`);
     expect(deleteButton).not.toBeInTheDocument();
 
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3"); 
     expect(totalCoursesElement).toBeInTheDocument();
 
   });
@@ -66,13 +66,11 @@ describe("UserTable tests", () => {
   
   test("renders empty table correctly", () => {
 
-    // arrange
     const currentUser = currentUserFixtures.adminUser;
     const expectedHeaders = ["id", "Name", "School", "Term", "StartDate", "EndDate", "GitHub Org"];
     const expectedFields = ["id", "name", "school", "term", "startDate", "endDate", "githubOrg"];
     const testId = "CoursesTable";
     
-    // act
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -81,7 +79,6 @@ describe("UserTable tests", () => {
       </QueryClientProvider>
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -92,7 +89,7 @@ describe("UserTable tests", () => {
       expect(fieldElement).not.toBeInTheDocument();
     });
 
-    const totalCoursesElement = screen.getByText("Total Courses: 0"); // Since the table is empty
+    const totalCoursesElement = screen.getByText("Total Courses: 0");
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
@@ -138,7 +135,7 @@ describe("UserTable tests", () => {
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
 
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3");  
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
@@ -264,8 +261,7 @@ describe("UserTable tests", () => {
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/courses/edit/1'));
     
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
-    expect(totalCoursesElement).toBeInTheDocument();
+    const totalCoursesElement = screen.getByText("Total Courses: 3"); 
     
   });
 
@@ -290,7 +286,7 @@ describe("UserTable tests", () => {
 
     fireEvent.click(deleteButton);
 
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3");
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
