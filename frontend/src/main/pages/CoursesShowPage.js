@@ -9,7 +9,7 @@ export default function CoursesShowPage() {
     let { id } = useParams();
     const { data: currentUser } = useCurrentUser();
 
-    const { data: course, error: _error, status: _status } =
+    const { data: courses, error: _error, status: _status } =
         useBackend(
             // Stryker disable next-line all : don't test internal caching of React Query
             [`/api/courses?id=${id}`],
@@ -22,13 +22,19 @@ export default function CoursesShowPage() {
             },
     []
         );
-    const courses = [course]; 
+    let allowed;
+        if(courses.length !== 0){
+            allowed = [courses]
+        }
+        else{
+            allowed = courses;
+        }
 
     return (
         <BasicLayout>
             <div className="pt-2">
                 <h1>Individual Course Details</h1>
-                <CoursesTable courses={courses} currentUser={currentUser} />
+                <CoursesTable courses={allowed} currentUser={currentUser} />
             </div>
         </BasicLayout>
     );

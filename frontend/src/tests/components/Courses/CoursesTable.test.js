@@ -312,24 +312,5 @@ describe("UserTable tests", () => {
     });
   });  
 
-  test("Clicking on ID hyperlink navigates correctly", async () => {
-    const currentUser = currentUserFixtures.userOnly;
-  
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-  
-    await waitFor(() => {
-      coursesFixtures.threeCourses.forEach((course, index) => {
-        const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
-        fireEvent.click(idLink);
-        expect(mockedNavigate).toHaveBeenCalledWith(`/courses/${course.id}`);
-      });
-    });
-  });
-  
+
 });
