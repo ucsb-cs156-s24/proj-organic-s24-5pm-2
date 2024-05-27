@@ -262,7 +262,7 @@ describe("UserTable tests", () => {
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/courses/edit/1'));
     
     const totalCoursesElement = screen.getByText("Total Courses: 3"); 
-    
+    expect(totalCoursesElement).toBeInTheDocument();
   });
 
 
