@@ -1,5 +1,5 @@
 import CoursesTable from "main/components/Courses/CoursesTable"
-import { fireEvent, render, waitFor, screen } from "@testing-library/react";
+import { fireEvent, render, waitFor, screen, within } from "@testing-library/react";
 import { coursesFixtures } from "fixtures/coursesFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -294,7 +294,7 @@ describe("UserTable tests", () => {
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
-  test("Has the expected column headers and renders hyperlinks for course IDs", () => {
+  /*test("Has the expected column headers and renders hyperlinks for course IDs", () => {
     const currentUser = currentUserFixtures.userOnly;
   
     render(
@@ -311,6 +311,27 @@ describe("UserTable tests", () => {
       expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
     });
   });  
-
+  */
+  test("Has the expected column headers and renders hyperlinks for course IDs", () => {
+    const currentUser = currentUserFixtures.userOnly;
+  
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+  
+    coursesFixtures.threeCourses.forEach((course, index) => {
+      // Directly fetch the link by role within each cell
+      const idCell = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
+      const idLink = within(idCell).getByRole('link'); // This replaces querySelector('a')
+  
+      // Assertions remain the same
+      expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
+    });
+  });
+  
 
 });
