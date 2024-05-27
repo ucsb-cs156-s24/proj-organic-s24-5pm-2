@@ -294,24 +294,6 @@ describe("UserTable tests", () => {
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
-  /*test("Has the expected column headers and renders hyperlinks for course IDs", () => {
-    const currentUser = currentUserFixtures.userOnly;
-  
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-  
-    coursesFixtures.threeCourses.forEach((course, index) => {
-      const idLink = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`).querySelector('a');
-      expect(idLink.tagName).toBe('A');
-      expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
-    });
-  });  
-  */
   test("Has the expected column headers and renders hyperlinks for course IDs", () => {
     const currentUser = currentUserFixtures.userOnly;
   
@@ -324,14 +306,28 @@ describe("UserTable tests", () => {
     );
   
     coursesFixtures.threeCourses.forEach((course, index) => {
-      // Directly fetch the link by role within each cell
       const idCell = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
-      const idLink = within(idCell).getByRole('link'); // This replaces querySelector('a')
+      const idLink = within(idCell).getByRole('link'); 
   
-      // Assertions remain the same
       expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
     });
   });
   
+  test('ID link navigation occurs correctly', () => {
+    const currentUser = currentUserFixtures.userOnly;
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+          <MemoryRouter>
+              <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+          </MemoryRouter>
+      </QueryClientProvider>
+    );
 
+    const firstIdCell = screen.getByTestId(`CoursesTable-cell-row-0-col-id`);
+    const idLink = within(firstIdCell).getByRole('link');
+
+    fireEvent.click(idLink); 
+    expect(mockedNavigate).toHaveBeenCalledWith(`/courses/${coursesFixtures.threeCourses[0].id}`);
+  });
+  
 });
