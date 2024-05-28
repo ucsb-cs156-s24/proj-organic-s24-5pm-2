@@ -73,8 +73,8 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
-
+        await screen.findByTestId(`${testId}-cell-row-0-col-id`);
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
     });
 
     test("renders course correctly for instructor", async () => {
@@ -90,18 +90,16 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
-
+        await screen.findByTestId(`${testId}-cell-row-0-col-id`);
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
     });
 
     test("renders empty table when backend unavailable, admin", async () => {
-     
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).timeout();
         const restoreConsole = mockConsole();
 
-        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -110,7 +108,6 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-       
         await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
 
         restoreConsole();
@@ -119,13 +116,11 @@ describe("CoursesShowPage tests", () => {
     });
 
     test("renders empty table when backend unavailable, instructor", async () => {
-       
         setupInstructorUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).timeout();
         const restoreConsole = mockConsole();
 
-       
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -134,7 +129,6 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-       
         await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
 
         restoreConsole();
@@ -143,13 +137,11 @@ describe("CoursesShowPage tests", () => {
     });
 
     test("what happens when you click delete, admin", async () => {
-        
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
         axiosMock.onDelete("/api/courses/delete").reply(200, "Course with id 1 was deleted");
 
-        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -158,30 +150,23 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-       
-        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toBeInTheDocument(); });
-
+        await screen.findByTestId(`${testId}-cell-row-0-col-id`);
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
 
         const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();
 
-       
         fireEvent.click(deleteButton);
 
-       
         await waitFor(() => { expect(mockToast).toBeCalledWith("Course with id 1 was deleted") });
-
     });
 
     test("what happens when you click delete, instructor", async () => {
-        
         setupInstructorUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
         axiosMock.onDelete("/api/courses/delete").reply(200, "Course with id 1 was deleted");
 
-        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -190,29 +175,22 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-       
-        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toBeInTheDocument(); });
-
+        await screen.findByTestId(`${testId}-cell-row-0-col-id`);
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
 
         const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();
 
-        
         fireEvent.click(deleteButton);
 
-        
         await waitFor(() => { expect(mockToast).toBeCalledWith("Course with id 1 was deleted") });
-
     });
 
     test("tests buttons for editing do not show up for user", async () => {
-        
         setupUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/get", { params: { id: 17 } }).reply(200, coursesFixtures.threeCourses[0]);
 
-        
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -221,15 +199,13 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-       
-        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toBeInTheDocument(); });
-
+        await screen.findByTestId(`${testId}-cell-row-0-col-id`);
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
 
         const deleteButton = screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).not.toBeInTheDocument();
-
     });
+
     test('renders correctly', async () => {
         const queryClient = new QueryClient();
         setupUser();
@@ -243,7 +219,7 @@ describe("CoursesShowPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => expect(screen.getByText('Individual Course Details')).toBeInTheDocument());
+        await screen.findByText('Individual Course Details');
         expect(screen.getByText('CS156')).toBeInTheDocument();
         expect(screen.getByLabelText('Upload a file')).toBeInTheDocument();
         expect(screen.getByText('Upload Roster')).toBeInTheDocument();
@@ -331,5 +307,4 @@ describe("CoursesShowPage tests", () => {
         expect(formData.get('file')).toEqual(file);
         expect(mockMutate.mock.calls[0][0].get('file')).toEqual(file);
     });
-
 });
