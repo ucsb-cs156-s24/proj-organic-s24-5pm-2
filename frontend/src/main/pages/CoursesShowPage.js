@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CoursesTable from 'main/components/Courses/CoursesTable';
-import { useBackend } from 'main/utils/useBackend';
+import { useBackend, useBackendMutation } from 'main/utils/useBackend';
 import { useCurrentUser } from 'main/utils/currentUser';
 
 export default function CoursesShowPage() {
@@ -43,14 +43,6 @@ export default function CoursesShowPage() {
                 data: data,
                 params: { courseId: id },
             }),
-            {
-                onSuccess: () => {
-                    toast.success("Roster uploaded successfully!");
-                },
-                onError: () => {
-                    toast.error("Error uploading roster. Please try again.");
-                },
-            }
         );
     
         const handleUpload = () => {
@@ -58,21 +50,19 @@ export default function CoursesShowPage() {
                 const formData = new FormData();
                 formData.append("file", file);
                 uploadRoster(formData);
-            } else {
-                toast.error("Please select a file to upload.");
-            }
+            } 
         };    
 
     return (
-        <BasicLayout>
-            <div className="pt-2">
-                <h1>Individual Course Details</h1>
-                <CoursesTable courses={allowed} currentUser={currentUser} />
-                <div className="mt-4">
-                    <input type="file" onChange={handleFileChange} />
-                    <button className="btn btn-primary mt-2" onClick={handleUpload}>Upload Roster</button>
+            <BasicLayout>
+                <div className="pt-2">
+                    <h1>Individual Course Details</h1>
+                    <CoursesTable courses={allowed} currentUser={currentUser} />
+                    <div className="mt-4">
+                        <input type="file" onChange={handleFileChange} aria-label="Upload a file" data-testid="file-input" />
+                        <button className="btn btn-primary mt-2" onClick={handleUpload}>Upload Roster</button>
+                    </div>
                 </div>
-            </div>
-        </BasicLayout>
+            </BasicLayout>
     );
 }

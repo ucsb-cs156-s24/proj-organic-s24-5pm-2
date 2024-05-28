@@ -270,26 +270,6 @@ describe("CoursesShowPage tests", () => {
         expect(fileInput.files[0]).toBe(file);
     });
 
-    test('shows error message if no file selected', async () => {
-        const queryClient = new QueryClient();
-        setupUser();
-        axiosMock.onGet("/api/courses/1").reply(200, coursesFixtures.threeCourses[0]);
-    
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter initialEntries={['/courses/1']}>
-                    <CoursesShowPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-    
-        const uploadButton = screen.getByText('Upload Roster');
-        fireEvent.click(uploadButton);
-    
-        await waitFor(() => expect(mockToast).toBeCalled());
-        expect(mockToast).toBeCalledWith("Please select a file to upload.");
-    });
-
     test('calls mutation on upload click', async () => {
         const queryClient = new QueryClient();
         const mockMutate = jest.fn();
@@ -318,6 +298,38 @@ describe("CoursesShowPage tests", () => {
         await waitFor(() => {
             expect(mockMutate).toHaveBeenCalledWith(expect.any(FormData));
         });
+    });
+
+    test('calls uploadRoster with correct parameters on file upload', async () => {
+        const queryClient = new QueryClient();
+        setupUser();
+        axiosMock.onGet("/api/courses/1").reply(200, coursesFixtures.threeCourses[0]);
+
+        const mockMutate = jest.fn();
+        require('main/utils/useBackend').useBackendMutation.mockReturnValue({ mutate: mockMutate });
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={['/courses/1']}>
+                    <CoursesShowPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const fileInput = await screen.findByTestId('file-input');
+        const file = new File(['test'], 'test.csv', { type: 'text/csv' });
+
+        fireEvent.change(fileInput, { target: { files: [file] } });
+
+        const uploadButton = screen.getByText('Upload Roster');
+        fireEvent.click(uploadButton);
+
+        await waitFor(() => expect(mockMutate).toBeCalled());
+
+        const formData = mockMutate.mock.calls[0][0];
+        expect(formData).toBeInstanceOf(FormData);
+        expect(formData.get('file')).toEqual(file);
+        expect(mockMutate.mock.calls[0][0].get('file')).toEqual(file);
     });
 
 });
