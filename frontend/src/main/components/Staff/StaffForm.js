@@ -18,26 +18,41 @@ function StaffForm({ initialContents, submitAction, buttonLabel = "Create" }) {
     <Form onSubmit={handleSubmit(submitAction)}>
       <Row>
         {initialContents && (
+          <Fragment>
             <Col>
-                <Form.Group className="mb-3" >
-                    <Form.Label htmlFor="id">Id</Form.Label>
-                    <Form.Control
-                        data-testid="StaffForm-id"
-                        id="id"
-                        type="text"
-                        {...register("id")}
-                        value={initialContents.id}
-                        disabled
-                    />
-                </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="id">Id</Form.Label>
+                <Form.Control
+                  data-testid="StaffForm-id"
+                  id="id"
+                  type="text"
+                  {...register("id")}
+                  value={initialContents.id}
+                  disabled
+                />
+              </Form.Group>
             </Col>
+            <Col>
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="courseId">Course ID</Form.Label>
+                <Form.Control
+                  data-testid="StaffForm-courseId"
+                  id="courseId"
+                  type="text"
+                  {...register("courseId")}
+                  value={initialContents.courseId}
+                  disabled
+                />
+              </Form.Group>
+            </Col>
+          </Fragment>
         )}
       </Row>
       
       <Row>
         <Col>
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="githubId">github ID</Form.Label>
+            <Form.Label htmlFor="githubId">Github ID</Form.Label>
             <Form.Control
               data-testid="StaffForm-githubId"
               id="githubId"

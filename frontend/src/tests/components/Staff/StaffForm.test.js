@@ -18,7 +18,7 @@ describe("StaffForm tests", () => {
                 <StaffForm/>
             </Router>
         );
-        await screen.findByText(/github ID/);
+        await screen.findByText(/Github ID/);
         await screen.findByText(/Create/);
     });
 
@@ -31,6 +31,7 @@ describe("StaffForm tests", () => {
         await screen.findByTestId(/StaffForm-id/);
         expect(screen.getByText(/Id/)).toBeInTheDocument();
         expect(screen.getByTestId(/StaffForm-id/)).toHaveValue("1");
+        expect(screen.getByTestId(/StaffForm-courseId/)).toHaveValue("1");
     });
 
     test("Correct Error messsages on missing input", async () => {
