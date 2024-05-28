@@ -22,7 +22,7 @@ export default function StaffCreatePage({storybook=false}) {
         objectToAxiosParams,
         { onSuccess }, 
         // Stryker disable next-line all : hard to set up test for caching
-        ["/api/Staff/all"] // mutation makes this key stale so that pages relying on it reload
+        ["/api/staff/all"] // mutation makes this key stale so that pages relying on it reload
         );
 
     const { isSuccess } = mutation
@@ -32,7 +32,7 @@ export default function StaffCreatePage({storybook=false}) {
     }
     
     if (isSuccess && !storybook) {
-        return <Navigate to="/Staff" />
+        return <Navigate to="/staff" />
     }
 
     return (
