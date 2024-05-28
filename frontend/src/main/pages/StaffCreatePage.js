@@ -1,13 +1,48 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
+import StaffForm from "main/components/Staff/StaffForm";
+import { Navigate } from 'react-router-dom'
+import { useBackendMutation } from "main/utils/useBackend";
+import { toast } from "react-toastify";
 
-export default function StaffCreatePage() {
+export default function StaffCreatePage({storybook=false}) {
 
-  // Stryker disable all : placeholder for future implementation
-  return (
-    <BasicLayout>
-      <div className="pt-2">
-        <h1>Create page not yet implemented</h1>
-      </div>
-    </BasicLayout>
-  )
+    const objectToAxiosParams = (staff) => ({
+        url: "/api/Staff/post",
+        method: "POST",
+        params: {
+        githubId: staff.githubId
+        }
+    });
+
+    const onSuccess = (staff) => {
+        toast(`New staff created - id: ${staff.id}`);
+    }
+
+    const mutation = useBackendMutation(
+        objectToAxiosParams,
+        { onSuccess }, 
+        // Stryker disable next-line all : hard to set up test for caching
+        ["/api/Staff/all"] // mutation makes this key stale so that pages relying on it reload
+        );
+
+    const { isSuccess } = mutation
+
+    const onSubmit = async (data) => {
+        mutation.mutate(data);
+    }
+    
+    if (isSuccess && !storybook) {
+        return <Navigate to="/Staff" />
+    }
+
+    return (
+        <BasicLayout>
+        <div className="pt-2">
+            <h1>Create New Staff</h1>
+
+            <StaffForm submitAction={onSubmit} />
+
+        </div>
+        </BasicLayout>
+    )
 }
