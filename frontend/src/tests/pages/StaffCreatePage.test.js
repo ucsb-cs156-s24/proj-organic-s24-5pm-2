@@ -63,7 +63,7 @@ describe("StaffCreatePage tests", () => {
             githubId: "scottpchow23"
         };
 
-        axiosMock.onPost("/api/courses/1/staff/post").reply(202, staff);
+        axiosMock.onPost("/api/courses/addStaff").reply(202, staff);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -92,7 +92,8 @@ describe("StaffCreatePage tests", () => {
 
         expect(axiosMock.history.post[0].params).toEqual(
             {
-                "githubId": "scottpchow23"
+                "courseId": 1,
+                "githubLogin": "scottpchow23"
             }
         );
         

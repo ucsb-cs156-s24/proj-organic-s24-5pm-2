@@ -9,10 +9,11 @@ export default function StaffCreatePage({storybook=false}) {
     const { courseId } = useParams();
 
     const objectToAxiosParams = (staff) => ({
-        url: `/api/courses/${courseId}/staff/post`, // Updated URL to include courseId
+        url: `/api/courses/addStaff`, // Updated URL to include courseId
         method: "POST",
         params: {
-            githubId: staff.githubId
+            courseId: courseId,
+            githubLogin: staff.githubId
         }
     });
 
@@ -24,7 +25,7 @@ export default function StaffCreatePage({storybook=false}) {
         objectToAxiosParams,
         { onSuccess }, 
         // Stryker disable next-line all : hard to set up test for caching
-        [`/api/courses/${courseId}/staff`] // Updated to reflect course-specific endpoint
+        [`/api/courses/${courseId}/staff`]
     );
 
     const { isSuccess } = mutation;
