@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export default function StaffCreatePage({storybook=false}) {
 
     const objectToAxiosParams = (staff) => ({
-        url: "/api/Staff/post",
+        url: "/api/staff/post",
         method: "POST",
         params: {
         githubId: staff.githubId
