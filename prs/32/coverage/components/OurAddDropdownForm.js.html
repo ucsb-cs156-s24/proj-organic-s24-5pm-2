@@ -208,8 +208,8 @@
 <a name='L143'></a><a href='#L143'>143</a>
 <a name='L144'></a><a href='#L144'>144</a>
 <a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -221,7 +221,10 @@
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -242,9 +245,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -262,16 +267,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">67x</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">44x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
-<span class="cline-any cline-yes">48x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">39x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">26x</span>
@@ -351,13 +355,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
 import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 &nbsp;
-// Stryker disable all
 function DropdownOption({ label, isSelected, onClickFunc, testid, rawKey }) {
     const [isHovered, setIsHovered] = useState(false);
     const handleMouseEnter = () =&gt; {
@@ -366,12 +367,15 @@ function DropdownOption({ label, isSelected, onClickFunc, testid, rawKey }) {
     const handleMouseLeave = () =&gt; {
         setIsHovered(false);
     };
+    // Stryker disable all
     const divStyle = {
         backgroundColor: isHovered ? 'lightgreen' : 'white',
         transition: 'backgroundColor 0.25s ease',
         'paddingLeft': '2px',
         'paddingRight': '2px',
+        'cursor': 'pointer',
     };
+    // Stryker restore all
     let mainOption;
     if (!isSelected) {
         mainOption = (
@@ -387,9 +391,11 @@ function DropdownOption({ label, isSelected, onClickFunc, testid, rawKey }) {
             &lt;/div&gt;
         );
     } else {
+        // Stryker disable all
         let altStyle = divStyle;
         altStyle['backgroundColor'] = 'green';
         altStyle['color'] = 'white';
+        // Stryker restore all
         mainOption = (
             &lt;div key={rawKey} data-testid={testid} style={altStyle} onClick={onClickFunc}&gt;
                 {label}
@@ -398,7 +404,6 @@ function DropdownOption({ label, isSelected, onClickFunc, testid, rawKey }) {
     }
     return &lt;div&gt;{mainOption}&lt;/div&gt;;
 }
-// Stryker restore all
 &nbsp;
 export default function OurAddDropdownForm({
     content,
@@ -408,7 +413,6 @@ export default function OurAddDropdownForm({
     onChangeFunc = null,
 }) {
     // Stryker disable all
-    // make it the so content is in alphabetical order
     content.sort((a, b) =&gt; {
         if (a.label &lt; b.label) {
             return -1;
@@ -418,7 +422,8 @@ export default function OurAddDropdownForm({
         }
         return 0;
     });
-     // Stryker restore all
+    // Stryker restore all
+    
     const [selectedContent, changeSelectedContent] = useState(basis);
     const [showingDropdown, changeShowingDropdown] = useState(false);
 &nbsp;
@@ -488,10 +493,8 @@ export default function OurAddDropdownForm({
                     &lt;Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
-                        // Stryker disable all
                         disabled={true}
                         style={{ cursor: 'not-allowed' }}
-                        // Stryker enable all
                     /&gt;
                 &lt;/div&gt;
             )}
@@ -505,7 +508,7 @@ export default function OurAddDropdownForm({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue May 28 2024 05:58:58 GMT-0700 (Pacific Daylight Time)
+                at Tue May 28 2024 16:14:55 GMT-0700 (Pacific Daylight Time)
             </div>
         <script src="../prettify.js"></script>
         <script>
