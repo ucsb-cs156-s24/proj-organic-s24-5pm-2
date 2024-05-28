@@ -47,7 +47,7 @@ export default function CoursesShowPage() {
         params: { courseId: id }
     });
 
-    const onSuccess = (file) => {
+    const onSuccess = () => {
         toast("Roster uploaded successfully!");
     };
 
@@ -57,8 +57,6 @@ export default function CoursesShowPage() {
         // Stryker disable next-line all : hard to set up test for caching
         ["/api/students/all"]
     );
-
-    const {isSuccess} = mutation;
  
     const handleUpload = () => {
         if (file) {
