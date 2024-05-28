@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import StaffCreatePage from "main/pages/StaffCreatePage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => {
 
 describe("StaffCreatePage tests", () => {
 
-    const axiosMock =new AxiosMockAdapter(axios);
+    const axiosMock = new AxiosMockAdapter(axios);
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -45,8 +45,10 @@ describe("StaffCreatePage tests", () => {
     test("renders without crashing", () => {
         render(
             <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <StaffCreatePage />
+                <MemoryRouter initialEntries={["/courses/1/staff/create"]}>
+                    <Routes>
+                        <Route path="/courses/:courseId/staff/create" element={<StaffCreatePage />} />
+                    </Routes>
                 </MemoryRouter>
             </QueryClientProvider>
         );
@@ -57,15 +59,18 @@ describe("StaffCreatePage tests", () => {
         const queryClient = new QueryClient();
         const staff = {
             id: 1,
+            courseId: 1,
             githubId: "scottpchow23"
         };
 
-        axiosMock.onPost("/api/staff/post").reply(202, staff);
+        axiosMock.onPost("/api/courses/1/staff/post").reply(202, staff);
 
         render(
             <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <StaffCreatePage />
+                <MemoryRouter initialEntries={["/courses/1/staff/create"]}>
+                    <Routes>
+                        <Route path="/courses/:courseId/staff/create" element={<StaffCreatePage />} />
+                    </Routes>
                 </MemoryRouter>
             </QueryClientProvider>
         );
@@ -88,12 +93,13 @@ describe("StaffCreatePage tests", () => {
         expect(axiosMock.history.post[0].params).toEqual(
             {
                 "githubId": "scottpchow23"
-        });
+            }
+        );
 
-        expect(mockToast).toBeCalledWith("New staff created - id: 1");
-        expect(mockNavigate).toBeCalledWith({ "to": "/staff" });
+        await waitFor(() => {
+            expect(mockToast).toBeCalledWith("New staff created - id: 1 courseId: 1");
+            expect(mockNavigate).toBeCalledWith({ "to": "/courses/1/staff" });
+        });
     });
 
-
 });
-
