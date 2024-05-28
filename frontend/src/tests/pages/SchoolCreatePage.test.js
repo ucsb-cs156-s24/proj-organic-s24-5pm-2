@@ -109,4 +109,6 @@ describe("SchoolCreatePage tests", () => {
         expect(mockToast).toBeCalledWith("New school created - id: ucsb");
         expect(mockNavigate).toBeCalledWith({ "to": "/schools" });
     });
+
+
 });

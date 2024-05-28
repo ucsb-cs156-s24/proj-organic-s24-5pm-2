@@ -6,16 +6,11 @@ import { toast } from "react-toastify";
 
 export default function SchoolCreatePage({storybook=false}) {
 
+
     const objectToAxiosParams = (school) => ({
         url: "/api/schools/post",
         method: "POST",
-        params: {
-        abbrev: school.abbrev,
-        name: school.name,
-        termRegex: school.termRegex,
-        termDescription: school.termDescription,
-        termError: school.termError
-        }
+        data: school
     });
 
     const onSuccess = (school) => {
