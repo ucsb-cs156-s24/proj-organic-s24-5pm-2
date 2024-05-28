@@ -95,11 +95,9 @@ describe("StaffCreatePage tests", () => {
                 "githubId": "scottpchow23"
             }
         );
-
-        await waitFor(() => {
-            expect(mockToast).toBeCalledWith("New staff created - id: 1 courseId: 1");
-            expect(mockNavigate).toBeCalledWith({ "to": "/courses/1/staff" });
-        });
+        
+        expect(mockToast).toBeCalledWith("New staff created - id: 1 courseId: 1");
+        expect(mockNavigate).toBeCalledWith({ "to": "/courses/1/staff" });
     });
 
 });
