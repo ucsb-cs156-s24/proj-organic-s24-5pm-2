@@ -23,7 +23,7 @@ describe("PlaceholderIndexPage tests", () => {
     const queryClient = new QueryClient();
     test("Renders expected content", () => {
         // arrange
-
+        const courseId = "1";
         setupUserOnly();
 
         // act
