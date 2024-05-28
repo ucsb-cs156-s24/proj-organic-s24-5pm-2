@@ -1,13 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import StaffIndexPage from "main/pages/StaffIndexPage";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 
 describe("PlaceholderIndexPage tests", () => {
 
@@ -23,13 +22,16 @@ describe("PlaceholderIndexPage tests", () => {
     const queryClient = new QueryClient();
     test("Renders expected content", () => {
         // arrange
+        const courseId = "1";
         setupUserOnly();
 
         // act
         render(
             <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <StaffIndexPage />
+                <MemoryRouter initialEntries={[`/courses/${courseId}/staff`]}>
+                    <Routes>
+                        <Route path="/courses/:courseId/staff" element={<StaffIndexPage />} />
+                    </Routes>
                 </MemoryRouter>
             </QueryClientProvider>
         );
@@ -42,4 +44,3 @@ describe("PlaceholderIndexPage tests", () => {
     });
 
 });
-
