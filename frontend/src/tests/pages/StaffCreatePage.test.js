@@ -77,7 +77,7 @@ describe("StaffCreatePage tests", () => {
         const githubIdField = screen.getByTestId("StaffForm-githubId");
         const submitButton = screen.getByTestId("StaffForm-submit");
 
-        fireEvent.change(githubIdField, { target: { value: 'richardfang888' } });
+        fireEvent.change(githubIdField, { target: { value: 'scottpchow23' } });
 
         expect(submitButton).toBeInTheDocument();
 
@@ -87,7 +87,7 @@ describe("StaffCreatePage tests", () => {
 
         expect(axiosMock.history.post[0].params).toEqual(
             {
-                "githubId": "richardfang888"
+                "githubId": "scottpchow23"
         });
 
         expect(mockToast).toBeCalledWith("New staff created - id: 1");
