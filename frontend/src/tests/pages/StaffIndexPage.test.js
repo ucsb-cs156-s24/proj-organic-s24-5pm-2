@@ -23,7 +23,6 @@ describe("PlaceholderIndexPage tests", () => {
     const queryClient = new QueryClient();
     test("Renders expected content", () => {
         // arrange
-        const courseId = "1";
         setupUserOnly();
 
         // act
@@ -36,7 +35,8 @@ describe("PlaceholderIndexPage tests", () => {
         );
 
         // assert
-        expect(screen.getByText(new RegExp(`Index page for course ${courseId} staff not yet implemented`, 'i'))).toBeInTheDocument();
+        const regex = new RegExp(`Index page for course\\s+${courseId}\\s+staff not yet implemented`, 'i');
+        expect(screen.getByText(regex)).toBeInTheDocument();
         expect(screen.getByText("Create")).toBeInTheDocument();
         expect(screen.getByText("Edit")).toBeInTheDocument();
     });
