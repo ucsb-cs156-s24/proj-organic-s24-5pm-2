@@ -40,7 +40,7 @@ export default function StaffCreatePage({storybook=false}) {
     return (
         <BasicLayout>
             <div className="pt-2">
-                <h1>Create New Staff</h1>
+                <h1>Create New Staff For Course {courseId}</h1>
                 <StaffForm submitAction={onSubmit} />
             </div>
         </BasicLayout>
