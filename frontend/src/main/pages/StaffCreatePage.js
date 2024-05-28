@@ -1,14 +1,15 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import StaffForm from "main/components/Staff/StaffForm";
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 
 export default function StaffCreatePage({storybook=false}) {
+    const { courseId } = useParams();
 
     const objectToAxiosParams = (staff) => ({
-        url: `/api/courses/${staff.courseId}/staff/post`, // Updated URL to include courseId
+        url: `/api/courses/${courseId}/staff/post`, // Updated URL to include courseId
         method: "POST",
         params: {
             githubId: staff.githubId
@@ -16,14 +17,14 @@ export default function StaffCreatePage({storybook=false}) {
     });
 
     const onSuccess = (staff) => {
-        toast(`New staff created - id: ${staff.id} courseId: ${staff.courseId}`);
+        toast(`New staff created - id: ${staff.id} courseId: ${courseId}`);
     }
 
     const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess }, 
         // Stryker disable next-line all : hard to set up test for caching
-        [`/api/courses/${staff.courseId}/staff`] // Updated to reflect course-specific endpoint
+        [`/api/courses/${courseId}/staff`] // Updated to reflect course-specific endpoint
     );
 
     const { isSuccess } = mutation;
@@ -33,7 +34,7 @@ export default function StaffCreatePage({storybook=false}) {
     }
     
     if (isSuccess && !storybook) {
-        return <Navigate to={`/courses/${staff.courseId}/staff`} />
+        return <Navigate to={`/courses/${courseId}/staff`} />
     }
 
     return (
