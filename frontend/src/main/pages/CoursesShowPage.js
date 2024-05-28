@@ -4,6 +4,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CoursesTable from 'main/components/Courses/CoursesTable';
 import { useBackend, useBackendMutation } from 'main/utils/useBackend';
 import { useCurrentUser } from 'main/utils/currentUser';
+import { toast } from 'react-toastify';
 
 export default function CoursesShowPage() {
     let { id } = useParams();
@@ -35,7 +36,7 @@ export default function CoursesShowPage() {
         const handleFileChange = (event) => {
             setFile(event.target.files[0]);
         };
-    
+
         const { mutate: uploadRoster } = useBackendMutation(
             (data) => ({
                 url: "/api/students/upload/egrades",
@@ -43,14 +44,24 @@ export default function CoursesShowPage() {
                 data: data,
                 params: { courseId: id },
             }),
+            {
+                onSuccess: () => {
+                    toast.success("Roster uploaded successfully!");
+                },
+                onError: () => {
+                    toast.error("Error uploading roster. Please try again.");
+                },
+            }
         );
-    
+
         const handleUpload = () => {
             if (file) {
                 const formData = new FormData();
                 formData.append("file", file);
                 uploadRoster(formData);
-            } 
+            } else {
+                toast.error("Please select a file to upload.");
+            }
         };    
 
     return (
