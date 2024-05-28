@@ -10,7 +10,6 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
 
-
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
     const originalModule = jest.requireActual('react-toastify');
@@ -60,8 +59,6 @@ describe("CoursesShowPage tests", () => {
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     }
-
-
 
     test("renders course correctly for admin", async () => {
         setupAdminUser();
@@ -232,6 +229,95 @@ describe("CoursesShowPage tests", () => {
         const deleteButton = screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).not.toBeInTheDocument();
 
+    });
+    test('renders correctly', async () => {
+        const queryClient = new QueryClient();
+        setupUser();
+        axiosMock.onGet("/api/courses/1").reply(200, coursesFixtures.threeCourses[0]);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={['/courses/1']}>
+                    <CoursesShowPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => expect(screen.getByText('Individual Course Details')).toBeInTheDocument());
+        expect(screen.getByText('CS156')).toBeInTheDocument();
+        expect(screen.getByLabelText('Upload a file')).toBeInTheDocument();
+        expect(screen.getByText('Upload Roster')).toBeInTheDocument();
+    });
+
+    test('sets file on change', async () => {
+        const queryClient = new QueryClient();
+        setupUser();
+        axiosMock.onGet("/api/courses/1").reply(200, coursesFixtures.threeCourses[0]);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={['/courses/1']}>
+                    <CoursesShowPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const fileInput = await screen.findByTestId('file-input');
+        const file = new File(['test'], 'test.csv', { type: 'text/csv' });
+
+        fireEvent.change(fileInput, { target: { files: [file] } });
+
+        expect(fileInput.files[0]).toBe(file);
+    });
+
+    test('shows error message if no file selected', async () => {
+        const queryClient = new QueryClient();
+        setupUser();
+        axiosMock.onGet("/api/courses/1").reply(200, coursesFixtures.threeCourses[0]);
+    
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={['/courses/1']}>
+                    <CoursesShowPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+    
+        const uploadButton = screen.getByText('Upload Roster');
+        fireEvent.click(uploadButton);
+    
+        await waitFor(() => expect(mockToast).toBeCalled());
+        expect(mockToast).toBeCalledWith("Please select a file to upload.");
+    });
+
+    test('calls mutation on upload click', async () => {
+        const queryClient = new QueryClient();
+        const mockMutate = jest.fn();
+        setupUser();
+        axiosMock.onGet("/api/courses/1").reply(200, coursesFixtures.threeCourses[0]);
+        jest.spyOn(require('main/utils/useBackend'), 'useBackendMutation').mockReturnValue({
+            mutate: mockMutate
+        });
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={['/courses/1']}>
+                    <CoursesShowPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const fileInput = await screen.findByTestId('file-input');
+        const file = new File(['test'], 'test.csv', { type: 'text/csv' });
+
+        fireEvent.change(fileInput, { target: { files: [file] } });
+
+        const uploadButton = screen.getByText('Upload Roster');
+        fireEvent.click(uploadButton);
+
+        await waitFor(() => {
+            expect(mockMutate).toHaveBeenCalledWith(expect.any(FormData));
+        });
     });
 
 });
