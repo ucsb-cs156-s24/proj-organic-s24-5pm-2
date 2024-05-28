@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CoursesTable from 'main/components/Courses/CoursesTable';
-import { useBackend, useBackendMutation } from 'main/utils/useBackend';
-import { toast } from 'react-toastify';
+import { useBackend } from 'main/utils/useBackend';
 import { useCurrentUser } from 'main/utils/currentUser';
 
 export default function CoursesShowPage() {
@@ -33,40 +32,36 @@ export default function CoursesShowPage() {
 
         const [file, setFile] = useState(null);
 
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
-    };
-
-    const objectToAxiosParams = (file) => ({
-        url: `/api/students/upload/egrades`,
-        method: "POST",
-        data: file,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        },
-        params: { courseId: id }
-    });
-
-    const onSuccess = () => {
-        toast("Roster uploaded successfully!");
-    };
-
-    const mutation = useBackendMutation(
-        objectToAxiosParams,
-        { onSuccess },
-        // Stryker disable next-line all : hard to set up test for caching
-        ["/api/students/all"]
-    );
- 
-    const handleUpload = () => {
-        if (file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            mutation.mutate(formData);
-        } else {
-            toast("Please select a file to upload.");
-        }
-    };
+        const handleFileChange = (event) => {
+            setFile(event.target.files[0]);
+        };
+    
+        const { mutate: uploadRoster } = useBackendMutation(
+            (data) => ({
+                url: "/api/students/upload/egrades",
+                method: "POST",
+                data: data,
+                params: { courseId: id },
+            }),
+            {
+                onSuccess: () => {
+                    toast.success("Roster uploaded successfully!");
+                },
+                onError: () => {
+                    toast.error("Error uploading roster. Please try again.");
+                },
+            }
+        );
+    
+        const handleUpload = () => {
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+                uploadRoster(formData);
+            } else {
+                toast.error("Please select a file to upload.");
+            }
+        };    
 
     return (
         <BasicLayout>
@@ -74,11 +69,10 @@ export default function CoursesShowPage() {
                 <h1>Individual Course Details</h1>
                 <CoursesTable courses={allowed} currentUser={currentUser} />
                 <div className="mt-4">
-                    <input type="file" onChange={handleFileChange} aria-label="Upload a file" data-testid="file-input" />
+                    <input type="file" onChange={handleFileChange} />
                     <button className="btn btn-primary mt-2" onClick={handleUpload}>Upload Roster</button>
                 </div>
             </div>
         </BasicLayout>
     );
-
 }
