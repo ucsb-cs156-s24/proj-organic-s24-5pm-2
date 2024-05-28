@@ -46,6 +46,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               (hasRole(currentUser, "ROLE_USER")) && (
                 <>
                   <Nav.Link href="/courses">Courses</Nav.Link>
+                  <Nav.Link href="/schools">Schools</Nav.Link>
                 </>
               )
             }
