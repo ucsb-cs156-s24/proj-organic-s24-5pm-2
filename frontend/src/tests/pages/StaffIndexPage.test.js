@@ -36,7 +36,7 @@ describe("PlaceholderIndexPage tests", () => {
         );
 
         // assert
-        expect(screen.getByText("Index page not yet implemented")).toBeInTheDocument();
+        expect(screen.getByText("staff not yet implemented")).toBeInTheDocument();
         expect(screen.getByText("Create")).toBeInTheDocument();
         expect(screen.getByText("Edit")).toBeInTheDocument();
     });

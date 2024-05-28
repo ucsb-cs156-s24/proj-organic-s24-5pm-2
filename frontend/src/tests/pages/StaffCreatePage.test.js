@@ -59,7 +59,7 @@ describe("StaffCreatePage tests", () => {
         const queryClient = new QueryClient();
         const staff = {
             id: 1,
-            courseId: 1,
+            courseId: "1",
             githubId: "scottpchow23"
         };
 
@@ -92,7 +92,7 @@ describe("StaffCreatePage tests", () => {
 
         expect(axiosMock.history.post[0].params).toEqual(
             {
-                "courseId": 1,
+                "courseId": "1",
                 "githubLogin": "scottpchow23"
             }
         );
