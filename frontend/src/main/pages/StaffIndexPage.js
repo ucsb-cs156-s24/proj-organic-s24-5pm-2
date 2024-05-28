@@ -1,18 +1,42 @@
 import React from 'react';
+import { useBackend } from 'main/utils/useBackend';
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
+import StaffTable from 'main/components/Staff/StaffTable';
+import { useCurrentUser, hasRole } from 'main/utils/currentUser';
 import { useParams } from 'react-router-dom';
 
 export default function StaffIndexPage() {
   const { courseId } = useParams();
+  const { data: currentUser } = useCurrentUser();
 
-  // Stryker disable all : placeholder for future implementation
+  const createButton = () => {
+    return (
+      <Button
+        variant="primary"
+        href={`/courses/${courseId}/staff/create`}
+        style={{ float: "right" }}
+      >
+        Create Staff
+      </Button>
+    );
+  };
+
+  const { data: staff, error: _error, status: _status } =
+    useBackend(
+      // Stryker disable next-line all : don't test internal caching of React Query
+      [`/api/courses/${courseId}/staff`],
+      // Stryker disable next-line all : GET is the default
+      { method: "GET", url: `/api/courses/${courseId}/staff` },
+      []
+    );
+
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Index page for course {courseId} staff not yet implemented</h1>
-        <p><a href={`/courses/${courseId}/staff/create`}>Create</a></p>
-        <p><a href={`/courses/${courseId}/staff/edit/1`}>Edit</a></p>
+        {(hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) && createButton()}
+        <h1>Staff for Course {courseId}</h1>
+        <StaffTable staff={staff} currentUser={currentUser} />
       </div>
     </BasicLayout>
-  )
+  );
 }
