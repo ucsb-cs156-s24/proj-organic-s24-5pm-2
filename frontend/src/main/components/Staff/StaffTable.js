@@ -1,29 +1,37 @@
 import React from "react";
-import OurTable from "main/components/OurTable"
+import OurTable from "main/components/OurTable";
+import { Button } from "react-bootstrap";
 
+export default function StaffTable({ staff, onDelete }) {
 
- export default function StaffTable({ staff }) {
+    const columns = [
+        {
+            Header: 'id',
+            accessor: 'id',
+        },
+        {
+            Header: 'courseId',
+            accessor: 'courseId',
+        },
+        {
+            Header: 'githubId',
+            accessor: 'githubId',
+        },
+        {
+            Header: 'Actions',
+            Cell: ({ row }) => (
+                <Button
+                    data-testid={`StaffTable-cell-row-${row.index}-col-Delete-button`}
+                    onClick={() => onDelete(row.original.id)}
+                >
+                    Delete
+                </Button>
+            )
+        }
+    ];
 
-     // Stryker disable next-line all : TODO try to make a good test for this
-
-     const columns = [
-         {
-             Header: 'id',
-             accessor: 'id',
-         },
-         {
-             Header: 'courseId',
-             accessor: 'courseId',
-         },
-         {
-             Header: 'githubId',
-             accessor: 'githubId',
-         },
-   
-     ];
-
-     return <OurTable
-         data={staff}
-         columns={columns}
-         testid={"StaffTable"} />;
-    };
+    return <OurTable
+        data={staff}
+        columns={columns}
+        testid={"StaffTable"} />;
+}

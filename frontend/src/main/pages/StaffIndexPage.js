@@ -5,6 +5,7 @@ import StaffTable from 'main/components/Staff/StaffTable';
 import { useCurrentUser, hasRole } from 'main/utils/currentUser';
 import { useParams } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 export default function StaffIndexPage() {
   const { courseId } = useParams();
@@ -31,12 +32,18 @@ export default function StaffIndexPage() {
       []
     );
 
+  const onDelete = async (id) => {
+    await axios.delete(`/api/staff/delete`, { params: { id } });
+    toast(`Staff member with id ${id} was deleted`);
+    refetch();
+  };
+
   return (
     <BasicLayout>
       <div className="pt-2">
         {(hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) && createButton()}
         <h1>Staff for Course {courseId}</h1>
-        <StaffTable staff={staff} />
+        <StaffTable staff={staff} onDelete={onDelete} />
       </div>
     </BasicLayout>
   );
