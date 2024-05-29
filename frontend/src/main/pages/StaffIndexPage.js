@@ -4,6 +4,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import StaffTable from 'main/components/Staff/StaffTable';
 import { useCurrentUser, hasRole } from 'main/utils/currentUser';
 import { useParams } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 export default function StaffIndexPage() {
   const { courseId } = useParams();

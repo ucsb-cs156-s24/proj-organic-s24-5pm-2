@@ -1,8 +1,7 @@
 import React from 'react';
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { staffFixtures } from "fixtures/staffFixtures"; // Ensure this fixture is available with appropriate data
-import { rest } from "msw";
+import { staffFixture } from "fixtures/staffFixture";
 
 import StaffIndexPage from "main/pages/StaffIndexPage";
 
@@ -43,7 +42,7 @@ ThreeItemsInstructorUser.parameters = {
             return res(ctx.json(systemInfoFixtures.showingNeither));
         }),
         rest.get('/api/courses/1/staff', (_req, res, ctx) => {
-            return res(ctx.json(staffFixtures.threeStaff));
+            return res(ctx.json(staffFixture.threeStaff));
         }),
         rest.delete('/api/staff/delete', (req, res, ctx) => {
             window.alert("DELETE: " + JSON.stringify(req.url));
@@ -63,7 +62,7 @@ ThreeItemsAdminUser.parameters = {
             return res(ctx.json(systemInfoFixtures.showingNeither));
         }),
         rest.get('/api/courses/1/staff', (_req, res, ctx) => {
-            return res(ctx.json(staffFixtures.threeStaff));
+            return res(ctx.json(staffFixture.threeStaff));
         }),
         rest.delete('/api/staff/delete', (req, res, ctx) => {
             window.alert("DELETE: " + JSON.stringify(req.url));
