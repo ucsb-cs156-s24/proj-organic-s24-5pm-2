@@ -5,7 +5,7 @@ import StaffIndexPage from "main/pages/StaffIndexPage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { staffFixtures } from "fixtures/staffFixtures";
+import { staffFixture } from "fixtures/staffFixture";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
@@ -127,7 +127,7 @@ describe("StaffIndexPage tests", () => {
         // arrange
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixtures.threeStaff);
+        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixture.threeStaff);
 
         // act
         render(
@@ -150,7 +150,7 @@ describe("StaffIndexPage tests", () => {
         // arrange
         setupInstructorUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixtures.threeStaff);
+        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixture.threeStaff);
 
         // act
         render(
@@ -225,7 +225,7 @@ describe("StaffIndexPage tests", () => {
         // arrange
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixtures.threeStaff);
+        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixture.threeStaff);
         axiosMock.onDelete("/api/staff/delete").reply(200, "Staff member with id 1 was deleted");
 
         // act
@@ -259,7 +259,7 @@ describe("StaffIndexPage tests", () => {
         // arrange
         setupInstructorUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixtures.threeStaff);
+        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixture.threeStaff);
         axiosMock.onDelete("/api/staff/delete").reply(200, "Staff member with id 1 was deleted");
 
         // act
@@ -293,7 +293,7 @@ describe("StaffIndexPage tests", () => {
         // arrange
         setupUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixtures.threeStaff);
+        axiosMock.onGet(`/api/courses/${courseId}/staff`).reply(200, staffFixture.threeStaff);
 
         // act
         render(
