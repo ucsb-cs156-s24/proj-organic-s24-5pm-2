@@ -1,8 +1,10 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
 import { Button } from "react-bootstrap";
+import { useCurrentUser, hasRole } from "main/utils/currentUser";
 
 export default function StaffTable({ staff, onDelete }) {
+    const { data: currentUser } = useCurrentUser();
 
     const columns = [
         {
@@ -20,12 +22,14 @@ export default function StaffTable({ staff, onDelete }) {
         {
             Header: 'Actions',
             Cell: ({ row }) => (
-                <Button
-                    data-testid={`StaffTable-cell-row-${row.index}-col-Delete-button`}
-                    onClick={() => onDelete(row.original.id)}
-                >
-                    Delete
-                </Button>
+                (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) && (
+                    <Button
+                        data-testid={`StaffTable-cell-row-${row.index}-col-Delete-button`}
+                        onClick={() => onDelete(row.original.id)}
+                    >
+                        Delete
+                    </Button>
+                )
             )
         }
     ];

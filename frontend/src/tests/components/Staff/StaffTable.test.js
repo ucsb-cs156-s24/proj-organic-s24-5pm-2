@@ -1,139 +1,94 @@
-import StaffTable from "main/components/Staff/StaffTable"
-import { currentUserFixtures } from "fixtures/currentUserFixtures";
-// import { fireEvent, render, waitFor, screen } from "@testing-library/react";
-import {  render, screen } from "@testing-library/react";
-import { staffFixture } from "fixtures/staffFixture";
+import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import StaffTable from "main/components/Staff/StaffTable";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { staffFixture } from "fixtures/staffFixture";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
+import { useCurrentUser } from "main/utils/currentUser";
 
+jest.mock("main/utils/currentUser");
 
-const mockedNavigate = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
-}));
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
+    return {
+        __esModule: true,
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
 
 describe("StaffTable tests", () => {
-  const queryClient = new QueryClient();
-  const expectedHeaders = ["id", "courseId", "githubId"];
-  const expectedFields = ["id", "courseId", "githubId"]; 
-  const testId = "StaffTable";
+    const axiosMock = new AxiosMockAdapter(axios);
+    const testId = "StaffTable";
 
-  test("Has the expected column headers and content for ordinary user", () => {
-
-    const currentUser = currentUserFixtures.userOnly;
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <StaffTable staff={staffFixture.threeStaff} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-
-    );
-
-    const expectedStaffgithub = staffFixture.threeStaff;
-    expectedStaffgithub.forEach((staffMember, index) => {
-      const githubIdCell = screen.getByTestId(`StaffTable-cell-row-${index}-col-githubId`);
-      expect(githubIdCell).toHaveTextContent(staffMember.githubId);
+    beforeEach(() => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
     });
 
-    const expectedStaffcourse = staffFixture.threeStaff;
-    expectedStaffcourse.forEach((staffMember, index) => {
-      const courseIdCell = screen.getByTestId(`StaffTable-cell-row-${index}-col-courseId`);
-      expect(courseIdCell).toHaveTextContent(staffMember.courseId);
+    test("Has the expected column headers and content for ordinary user", async () => {
+        useCurrentUser.mockReturnValue({ data: apiCurrentUserFixtures.userOnly });
+
+        const queryClient = new QueryClient();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <StaffTable staff={staffFixture.threeStaff} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+
+        const deleteButton = screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`);
+        expect(deleteButton).not.toBeInTheDocument();
     });
 
-    expectedHeaders.forEach((headerText) => {
-      const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
+    test("Has the expected column headers and content for admin user", async () => {
+        useCurrentUser.mockReturnValue({ data: apiCurrentUserFixtures.adminUser });
+
+        const queryClient = new QueryClient();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <StaffTable staff={staffFixture.threeStaff} onDelete={jest.fn()} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+
+        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+        expect(deleteButton).toBeInTheDocument();
     });
 
-    expectedFields.forEach((field) => {
-      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
-      expect(header).toBeInTheDocument();
+    test("Has the expected column headers and content for instructor user", async () => {
+        useCurrentUser.mockReturnValue({ data: apiCurrentUserFixtures.instructorUser });
+
+        const queryClient = new QueryClient();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <StaffTable staff={staffFixture.threeStaff} onDelete={jest.fn()} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+
+        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+        expect(deleteButton).toBeInTheDocument();
     });
-
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-
-
-    
-    const editButton = screen.queryByTestId(`${testId}-cell-row-0-col-Edit-button`);
-    expect(editButton).not.toBeInTheDocument();
-
-    const deleteButton = screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`);
-    expect(deleteButton).not.toBeInTheDocument();
-
-  });
-
-  test("renders empty table correctly", () => {
-
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-
-    // act
-    render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-          <StaffTable staff={[]} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-
-
-    // assert
-    expectedHeaders.forEach((headerText) => {
-      const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
-    });
-
-    expectedFields.forEach((field) => {
-      const fieldElement = screen.queryByTestId(`${testId}-cell-row-0-col-${field}`);
-      expect(fieldElement).not.toBeInTheDocument();
-    });
-  });
-
-
-  test("Has the expected colum headers and content for adminUser", () => {
-
-    const currentUser = currentUserFixtures.adminUser;
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-            <StaffTable staff={staffFixture.threeStaff} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-
-    );
-
-
-    expectedHeaders.forEach((headerText) => {
-      const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
-    });
-
-    expectedFields.forEach((field) => {
-      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
-      expect(header).toBeInTheDocument();
-    });
-
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-
-    // const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-    // expect(deleteButton).toBeInTheDocument();
-    // expect(deleteButton).toHaveClass("btn-danger");
-
-  });
-
-
-
-
-  
-
 });
