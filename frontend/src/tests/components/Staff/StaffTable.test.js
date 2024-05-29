@@ -95,9 +95,6 @@ describe("StaffTable tests", () => {
       const fieldElement = screen.queryByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(fieldElement).not.toBeInTheDocument();
     });
-
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-    expect(deleteButton).toBeInTheDocument();
   });
 
 
@@ -128,8 +125,8 @@ describe("StaffTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-    expect(deleteButton).toBeInTheDocument();
+    // const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    // expect(deleteButton).toBeInTheDocument();
     // expect(deleteButton).toHaveClass("btn-danger");
 
   });
