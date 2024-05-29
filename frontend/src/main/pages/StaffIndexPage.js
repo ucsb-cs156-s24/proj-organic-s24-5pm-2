@@ -36,7 +36,7 @@ export default function StaffIndexPage() {
       <div className="pt-2">
         {(hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_INSTRUCTOR")) && createButton()}
         <h1>Staff for Course {courseId}</h1>
-        <StaffTable staff={staff} currentUser={currentUser} />
+        <StaffTable staff={staff} />
       </div>
     </BasicLayout>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { staffFixture } from "fixtures/staffFixture";
+import { rest } from "msw";
 
 import StaffIndexPage from "main/pages/StaffIndexPage";
 
