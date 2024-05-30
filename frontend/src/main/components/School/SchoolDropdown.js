@@ -28,7 +28,8 @@ export default function SchoolDropdown({register}){
             basis={null}
             register={register}
             htmlFor="name"
-        ></OurAddDropdownForm>
+            autocomplete={true}
+        />
     )
 }
 

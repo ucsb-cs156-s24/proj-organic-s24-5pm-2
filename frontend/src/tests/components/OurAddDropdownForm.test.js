@@ -63,25 +63,98 @@ describe('OurAddDropdownForm Tests', () => {
         expect(screen.queryByTestId('testid-dropdown-form-option-2')).not.toBeInTheDocument();
     });
 
+    test('renders an correctly selected initialElement with autocomplete off', async () => {
+        render(
+            <OurAddDropdownForm
+                content={threeOptions}
+                label="empty"
+                basis={threeOptions[1]}
+                autocomplete={false}
+            />
+        );
+        // load in element
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        // verify that there is an initial selection
+        expect(screen.queryByTestId('testid-test-dropdown-form')).toHaveAttribute('value', 'click me');
+        // load dropdown
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        fireEvent.select(submitField);
+        // verify that initial selection is highlighted
+        expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-0')).toHaveStyle({backgroundColor: "white"});
+        expect(await screen.findByTestId('testid-dropdown-form-option-1')).toHaveStyle({backgroundColor: "green"});
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toHaveStyle({backgroundColor: "white"});
+    });
+
+    test('renders an correctly selected initialElement with autocomplete off and register', async () => {
+        const register = jest.fn();
+        render(
+            <OurAddDropdownForm
+                content={threeOptions}
+                label="empty"
+                basis={threeOptions[1]}
+                autocomplete={false}
+                register={register}
+            />
+        );
+        expect(register).toHaveBeenCalled();
+        // load in element
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        // verify that there is an initial selection
+        expect(screen.queryByTestId('testid-test-dropdown-form')).toHaveAttribute('value', 'click me');
+        // load dropdown
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        fireEvent.select(submitField);
+        // verify that initial selection is highlighted
+        expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-0')).toHaveStyle({backgroundColor: "white"});
+        expect(await screen.findByTestId('testid-dropdown-form-option-1')).toHaveStyle({backgroundColor: "green"});
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toHaveStyle({backgroundColor: "white"});
+    });
+
+    test('correctly css styling on autocomplete being off', async () => {
+        render(
+            <OurAddDropdownForm
+                content={threeOptions}
+                label="empty"
+                basis={threeOptions[1]}
+                autocomplete={false}
+            />
+        );
+        // load in element
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        expect(screen.getByTestId('testid-test-dropdown-form')).toHaveStyle({cursor: 'pointer', 'caretColor': 'transparent'});
+    });
+
+
     test('renders on no inital selected element', async () => {
         render(<OurAddDropdownForm content={threeOptions} label="empty" />);
-
         expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
-
         expect(screen.queryByTestId('testid-test-dropdown-form')).toHaveAttribute('value', '');
     });
 
     test('renders an empty dropdown element with no options', async () => {
         render(<OurAddDropdownForm content={[]} label="empty" />);
-
         expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
-
         expect(screen.queryByTestId('testid-dropdown-form-option-0')).not.toBeInTheDocument();
+    });
+
+    test('renders empty text with autocomplete off', async () => {
+        render(<OurAddDropdownForm content={threeOptions} label="empty" autocomplete={false}/>);
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        expect(screen.getByTestId('testid-test-dropdown-form')).toHaveValue("");
+    });
+
+    test('renders empty text with autocomplete off (with register)', async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={threeOptions} label="empty" autocomplete={false} register={register}/>);
+        expect(register).toHaveBeenCalled();
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        expect(screen.getByTestId('testid-test-dropdown-form')).toHaveValue("");
     });
 
     test('default testid is testId', async () => {
         render(<OurAddDropdownForm content={threeOptions} label="empty" />);
-
         expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
     });
 
@@ -232,7 +305,7 @@ describe('OurAddDropdownForm Tests', () => {
     });
 
     test("prefix renders only a portion of options", async () => {
-        render(<OurAddDropdownForm content={threeOptions} label="empty" />);
+        render(<OurAddDropdownForm content={threeOptions} label="empty" autocomplete={true}/>);
 
         expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
         const submitField = screen.getByTestId('testid-test-dropdown-form');
@@ -247,6 +320,40 @@ describe('OurAddDropdownForm Tests', () => {
         expect(screen.getByTestId('testid-dropdown-form-option-1')).toHaveTextContent("click me");
         expect(screen.getByTestId('testid-dropdown-form-option-0')).toHaveStyle({backgroundColor:"lightgreen"}); // ghost
         expect(screen.getByTestId('testid-dropdown-form-option-1')).toHaveStyle({backgroundColor:"white"});
+    });
+
+    test("prefix doesn't renders only a portion of options with autocomplete off", async () => {
+        render(<OurAddDropdownForm content={subsetThreeOptions} label="empty" autocomplete={false}/>);
+
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        // load in the options
+        fireEvent.select(submitField);
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toBeInTheDocument();
+        // select last one
+        const firstSelection = screen.getByTestId('testid-dropdown-form-option-2');
+        fireEvent.click(firstSelection);
+        fireEvent.click(submitField);
+
+        expect(screen.getByTestId('testid-dropdown-form-option-0')).toHaveTextContent("a");
+        expect(screen.getByTestId('testid-dropdown-form-option-1')).toHaveTextContent("abba");
+        expect(screen.getByTestId('testid-dropdown-form-option-2')).toHaveTextContent("abba concert");
+    });
+
+    test("prefix doesn't renders only a portion of options with autocomplete off 2", async () => {
+        render(<OurAddDropdownForm content={subsetThreeOptions} label="empty" autocomplete={false}/>);
+
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        // load in the options
+        fireEvent.select(submitField);
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toBeInTheDocument();
+        // trigger onChange which user can't normally do?
+        fireEvent.change(submitField, {target : {value : "abba"}});
+
+        expect(screen.getByTestId('testid-dropdown-form-option-0')).toHaveTextContent("a");
+        expect(screen.getByTestId('testid-dropdown-form-option-1')).toHaveTextContent("abba");
+        expect(screen.getByTestId('testid-dropdown-form-option-2')).toHaveTextContent("abba concert");
     });
 
     test("prefix renders only a portion of options 2", async () => {

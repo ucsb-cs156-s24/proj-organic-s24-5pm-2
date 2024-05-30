@@ -55,8 +55,9 @@ function DropdownOption({ label, isSelected, onClickFunc, testid, rawKey, isGhos
 export default function OurAddDropdownForm({
     content,
     label,
-    basis,
+    basis = null,
     testId = 'testid',
+    autocomplete=true,
     onChangeFunc = null,
     register = null,
     htmlFor = "label"
@@ -79,7 +80,7 @@ export default function OurAddDropdownForm({
     useEffect(() => {
         const fixedContent = [];
         for (let i = 0; i < content.length; ++i) {
-            if (!basis || content[i].label.startsWith(basis.label)) {
+            if (!autocomplete || !basis || content[i].label.startsWith(basis.label)) {
                 fixedContent.push(content[i]);
             }
         }
@@ -87,15 +88,17 @@ export default function OurAddDropdownForm({
         if(fixedContent.length > 0){
             changeGhostContent(fixedContent[0]);
         }
-    }, [content, basis]);
+    }, [content, basis, autocomplete]);
     // Stryker restore all
 
     const [selectedContent, changeSelectedContent] = useState(basis);
-    const [userTypedContent, changeUserTypContent] = useState(basis ? basis.label : "");
+    const [userTypedContent, changeUserTypContent] = useState(basis !== null ? basis.label : "");
     const [showingDropdown, changeShowingDropdown] = useState(false);
-    const [validationStyle, changeValidationStyle] = useState({});
+    const [validationStyle, changeValidationStyle] = useState(autocomplete ? {} : {cursor: 'pointer', 'caretColor': 'transparent'});
+    // the user can press enter to autocomplete
     // Stryker disable next-line all : there might be a good test for this but since showingDropdown doesn't render anything on fixedContent.length === 0 this might be harder to test
     const [ghostContent, changeGhostContent] = useState(filteredContent.length > 0 ? filteredContent[0] : null);
+    
 
     // Stryker disable all
     const optionWrapperStyle = {
@@ -149,15 +152,17 @@ export default function OurAddDropdownForm({
     };
 
     const internalOnChange = (event) => {
-        // grab the userText 
-        const newSelectedContent = event.target.value;
-        changeUserTypContent(newSelectedContent);
-        filterPrefix(newSelectedContent);
+        if(autocomplete){
+            // grab the userText 
+            const newSelectedContent = event.target.value;
+            changeUserTypContent(newSelectedContent);
+            filterPrefix(newSelectedContent);
+        }
+
         if (onChangeFunc) {
             onChangeFunc(event);
         }
     };
-
     const fillGhost = (event) => {
         if(event.key === "Enter" && ghostContent !== null) {
             changeUserTypContent(ghostContent.label);
@@ -174,12 +179,12 @@ export default function OurAddDropdownForm({
                     <Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
-                        value={userTypedContent}
+                        value={autocomplete ? userTypedContent : (selectedContent !== null ? selectedContent.label : "") }
                         onChange={internalOnChange}
                         style={validationStyle}
                         onFocus={() => {changeShowingDropdown(true);}}
                         onClick={() => {changeShowingDropdown(true);}}
-                        onKeyDown={fillGhost}
+                        onKeyDown={autocomplete ? fillGhost : null}
                         {...register()}
                     />
                 )}
@@ -187,12 +192,12 @@ export default function OurAddDropdownForm({
                     <Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
-                        value={userTypedContent}
+                        value={autocomplete ? userTypedContent : (selectedContent !== null ? selectedContent.label : "") }
                         onChange={internalOnChange}
                         style={validationStyle}
                         onFocus={() => {changeShowingDropdown(true);}}
                         onClick={() => {changeShowingDropdown(true);}}
-                        onKeyDown={fillGhost}
+                        onKeyDown={autocomplete ? fillGhost : null}
                     />
                 )}
                 {showingDropdown && (
@@ -202,9 +207,11 @@ export default function OurAddDropdownForm({
                             const innerLabel = obj.label;
                             const select = () => {
                                 changeSelectedContent(obj);
-                                changeUserTypContent(innerLabel);
-                                changeGhostContent(obj);
-                                filterPrefix(innerLabel);
+                                if(autocomplete){
+                                    changeUserTypContent(innerLabel);
+                                    changeGhostContent(obj);
+                                    filterPrefix(innerLabel);
+                                }
                                 changeShowingDropdown(false);
                             };
                             return (
@@ -212,7 +219,7 @@ export default function OurAddDropdownForm({
                                     testid={`${testId}-dropdown-form-option-${count++}`}
                                     label={innerLabel}
                                     isSelected={selectedContent && key === selectedContent.key}
-                                    isGhost={ghostContent && key === ghostContent.key}
+                                    isGhost={autocomplete ? (key === ghostContent.key) : false}
                                     rawKey = {key}
                                     // Stryker disable next-line all
                                     key ={`${key}-dropdown-option`}

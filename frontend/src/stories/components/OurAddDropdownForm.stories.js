@@ -55,6 +55,31 @@ TenSchoolRender.args = {
     content: schoolsListFixtures.tenSchool,
     testId : "test-sample-dropdown",
     label : "Sample Ten Dropdown",
+    autocomplete : true,
     register : null,
-    htmlFor : "sampleTenDropdown"
+    htmlFor : "sampleTenDropdown",
+}
+
+export const OneSchoolRenderNoAuto = Template.bind({});
+
+OneSchoolRenderNoAuto.args = {
+    basis: null,
+    content: schoolsListFixtures.oneSchool,
+    testId : "test-sample-dropdown",
+    label : "Sample One Dropdown",
+    autocomplete : false,
+    register : null,
+    htmlFor : "sampleOneDropdownNoAuto"
+};
+
+export const TenSchoolRenderNoAuto = Template.bind({});
+
+TenSchoolRenderNoAuto.args = {
+    basis: schoolsListFixtures.tenSchool[1],
+    content: schoolsListFixtures.tenSchool,
+    testId : "test-sample-dropdown",
+    label : "Sample Ten Dropdown",
+    autocomplete : false,
+    register : null,
+    htmlFor : "sampleTenDropdownNoAuto"
 }

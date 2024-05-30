@@ -74,9 +74,7 @@ describe("SchoolDropdown", () => {
         );
 
         await screen.findByText(/Name/);
-        expect(
-            await screen.findByTestId('school-dropdown-test-dropdown-form')
-        ).toBeInTheDocument();
+        expect(await screen.findByTestId('school-dropdown-test-dropdown-form')).toBeInTheDocument();
         //selection so the dropdown appears
         const submitField = screen.getByTestId('school-dropdown-test-dropdown-form');
         fireEvent.select(submitField);
@@ -89,6 +87,38 @@ describe("SchoolDropdown", () => {
         expect(await screen.findByTestId('school-dropdown-dropdown-form-option-0')).toHaveTextContent("UC San Diego");
         expect(await screen.findByTestId('school-dropdown-dropdown-form-option-1')).toHaveTextContent("UC Santa Barbara");
         expect(await screen.findByTestId('school-dropdown-dropdown-form-option-2')).toHaveTextContent("University of Minnesota");
+    });
+
+    test("renders three schools correctly after selecting an option", async () => {
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/schools/all").reply(200, sampleSchools);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <SchoolDropdown />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await screen.findByText(/Name/);
+        expect(await screen.findByTestId('school-dropdown-test-dropdown-form')).toBeInTheDocument();
+        //selection so the dropdown appears
+        const submitField = screen.getByTestId('school-dropdown-test-dropdown-form');
+        fireEvent.select(submitField);
+        expect(await screen.findByTestId('school-dropdown-wrapper')).toBeInTheDocument();
+        expect(await screen.findByTestId('school-dropdown-dropdown-form-option-0')).toBeInTheDocument();
+        expect(await screen.findByTestId('school-dropdown-dropdown-form-option-1')).toBeInTheDocument();
+        expect(await screen.findByTestId('school-dropdown-dropdown-form-option-2')).toBeInTheDocument();
+        expect(screen.queryByTestId('school-dropdown-dropdown-form-option-3')).not.toBeInTheDocument();
+
+        const optionOne = screen.getByTestId('school-dropdown-dropdown-form-option-1');
+        fireEvent.click(optionOne);
+        fireEvent.click(submitField);
+
+        expect(await screen.findByTestId('school-dropdown-dropdown-form-option-0')).toHaveTextContent("UC Santa Barbara");
+        expect(screen.queryByTestId('school-dropdown-dropdown-form-option-1')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('school-dropdown-dropdown-form-option-2')).not.toBeInTheDocument();
     });
 
     test("renders nothing on empty server response", async () => {
