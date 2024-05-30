@@ -26,6 +26,7 @@ export default function SchoolDropdown(){
             label="Name"
             testId="school-dropdown"
             basis={null}
+            register={null}
         ></OurAddDropdownForm>
     )
 }

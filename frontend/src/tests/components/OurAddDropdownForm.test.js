@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import OurAddDropdownForm from 'main/components/OurAddDropdownForm';
+import { Button, Form } from 'react-bootstrap';
 
 describe('OurAddDropdownForm Tests', () => {
     const threeOptions = [
@@ -368,7 +369,7 @@ describe('OurAddDropdownForm Tests', () => {
         expect(screen.getByTestId('testid-dropdown-form-option-2')).toHaveStyle({backgroundColor:"white"});
     });
 
-    test("prefix removes all options and causes red text", async () => {
+    test("too long option removes all options and causes red text", async () => {
         render(<OurAddDropdownForm content={threeOptions} label="empty" />);
 
         expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
@@ -470,5 +471,66 @@ describe('OurAddDropdownForm Tests', () => {
 
         expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
     });
+
+    // test("form is invalid on only prefix match", async () => {
+    //     render(
+    //     <Form>
+    //         <Form.Group >
+    //             <OurAddDropdownForm content={threeOptions} label="empty" />
+    //             <Form.Control.Feedback type="invalid">
+    //                 {"error message unique"}
+    //             </Form.Control.Feedback>
+    //         </Form.Group>
+    //         <Button type="submit" data-testid="submit-me"/>
+    //     </Form>
+    //     );
+
+    //     expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+    //     const submitField = screen.getByTestId('testid-test-dropdown-form');
+    //     fireEvent.change(submitField, { target: { value : 'c'} });
+    //     fireEvent.select(submitField);
+
+    //     const submitButton = screen.getByTestId("submit-me");
+    //     fireEvent.click(submitButton);
+
+    //     expect(await screen.findByText("error message unique")).toBeInTheDocument();
+
+    // });
+
+    // test("form is not invalid on match", async () => {
+    //     const {
+    //         register,
+    //         formState: { errors },
+    //         handleSubmit,
+    //     } = useForm(
+    //         { defaultValues: initialContents || {}, }
+    //     );
+
+    //     render(
+    //     <Form onSubmit={handleSubmit()}>
+    //         <Form.Group >
+    //             <OurAddDropdownForm content={threeOptions} label="empty" />
+    //             <Form.Control.Feedback type="invalid">
+    //                 {"error message unique"}
+    //             </Form.Control.Feedback>
+    //         </Form.Group>
+    //         <Button type="submit" data-testid="submit-me"/>
+    //     </Form>
+    //     );
+
+    //     expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+    //     const submitField = screen.getByTestId('testid-test-dropdown-form');
+    //     fireEvent.change(submitField, { target: { value : 'choose me'} });
+    //     fireEvent.select(submitField);
+
+    //     expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
+    //     fireEvent.keyDown(submitField, {key: 'Enter', code: 'Enter'});
+
+    //     const submitButton = screen.getByTestId("submit-me");
+    //     fireEvent.click(submitButton);
+
+    //     expect(screen.queryByText("error message unique")).not.toBeInTheDocument();
+
+    // });
 
 });

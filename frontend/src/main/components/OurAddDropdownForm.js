@@ -58,6 +58,8 @@ export default function OurAddDropdownForm({
     basis,
     testId = 'testid',
     onChangeFunc = null,
+    register = null,
+    htmlFor = "label"
 }) {
     // Stryker disable all
     content.sort((a, b) => {
@@ -169,10 +171,10 @@ export default function OurAddDropdownForm({
     };
     return (
         <div>
-            {label}
+            <Form.Label htmlFor={htmlFor}>{label}</Form.Label>
             {content.length !== 0 && (
                 <div>
-                    <Form.Control
+                    {register !== null && (<Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
                         value={userTypedContent}
@@ -185,7 +187,23 @@ export default function OurAddDropdownForm({
                             changeShowingDropdown(true);
                         }}
                         onKeyDown={fillGhost}
-                    />
+                        {...register()}
+                    />)}
+                    {register === null && (<Form.Control
+                        data-testid={`${testId}-test-dropdown-form`}
+                        type="text"
+                        value={userTypedContent}
+                        onChange={internalOnChange}
+                        style={validationStyle}
+                        onFocus={() => {
+                            changeShowingDropdown(true);
+                        }}
+                        onClick={() => {
+                            changeShowingDropdown(true);
+                        }}
+                        onKeyDown={fillGhost}
+                    />)}
+                    
                     {showingDropdown && (
                         <div data-testid = {`${testId}-wrapper`} style={optionWrapperStyle}>
                             {filteredContent.map((obj) => {
