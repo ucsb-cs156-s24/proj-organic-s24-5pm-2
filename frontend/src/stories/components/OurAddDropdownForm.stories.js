@@ -22,6 +22,8 @@ Sample.args = {
     label : "Sample Dropdown",
     basis : null,
     testId : "test-sample-dropdown",
+    register : null,
+    htmlFor : "sampleDropdown"
 };
 
 export const Empty = Template.bind({});
@@ -31,6 +33,8 @@ Empty.args = {
     label : "Sample Empty Dropdown",
     basis : null,
     testId : "test-sample-dropdown",
+    register : null,
+    htmlFor : "sampleEmptyDropdown"
 };
 
 export const OneSchoolRender = Template.bind({});
@@ -40,6 +44,8 @@ OneSchoolRender.args = {
     content: schoolsListFixtures.oneSchool,
     testId : "test-sample-dropdown",
     label : "Sample One Dropdown",
+    register : null,
+    htmlFor : "sampleOneDropdown"
 };
 
 export const TenSchoolRender = Template.bind({});
@@ -49,4 +55,6 @@ TenSchoolRender.args = {
     content: schoolsListFixtures.tenSchool,
     testId : "test-sample-dropdown",
     label : "Sample Ten Dropdown",
+    register : null,
+    htmlFor : "sampleTenDropdown"
 }

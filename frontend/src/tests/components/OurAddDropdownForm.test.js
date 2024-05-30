@@ -1,6 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import OurAddDropdownForm from 'main/components/OurAddDropdownForm';
-import { Button, Form } from 'react-bootstrap';
 
 describe('OurAddDropdownForm Tests', () => {
     const threeOptions = [
@@ -87,25 +86,13 @@ describe('OurAddDropdownForm Tests', () => {
     });
 
     test('testid is working', async () => {
-        render(
-            <OurAddDropdownForm
-                content={threeOptions}
-                label="empty"
-                testId={'metronome'}
-            />
-        );
+        render(<OurAddDropdownForm content={threeOptions} label="empty" testId={'metronome'} />);
         expect(await screen.findByTestId('metronome-test-dropdown-form')).toBeInTheDocument();
     });
 
     test('onChangeFunc is called on typing', async () => {
         const changeFunc = jest.fn();
-        render(
-            <OurAddDropdownForm
-                content={threeOptions}
-                label="empty"
-                onChangeFunc={changeFunc}
-            ></OurAddDropdownForm>
-        );
+        render(<OurAddDropdownForm content={threeOptions} label="empty" onChangeFunc={changeFunc} />);
 
         expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
         // load changeFunc
@@ -133,9 +120,7 @@ describe('OurAddDropdownForm Tests', () => {
 
     test('options are rendered correctly', async () => {
         render(<OurAddDropdownForm content={threeOptions} label="empty" />);
-        expect(
-            await screen.findByTestId('testid-test-dropdown-form')
-        ).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
         //selection so the dropdown appears
         const submitField = screen.getByTestId('testid-test-dropdown-form');
         fireEvent.select(submitField);
@@ -472,65 +457,111 @@ describe('OurAddDropdownForm Tests', () => {
         expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
     });
 
-    // test("form is invalid on only prefix match", async () => {
-    //     render(
-    //     <Form>
-    //         <Form.Group >
-    //             <OurAddDropdownForm content={threeOptions} label="empty" />
-    //             <Form.Control.Feedback type="invalid">
-    //                 {"error message unique"}
-    //             </Form.Control.Feedback>
-    //         </Form.Group>
-    //         <Button type="submit" data-testid="submit-me"/>
-    //     </Form>
-    //     );
+    test("dropdown has proper htmlFor label for Forms", async () => {
+        render(<OurAddDropdownForm content={threeOptions} label="metronome tick" htmlFor="metronomeTick"/>);
 
-    //     expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
-    //     const submitField = screen.getByTestId('testid-test-dropdown-form');
-    //     fireEvent.change(submitField, { target: { value : 'c'} });
-    //     fireEvent.select(submitField);
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        const label = screen.getByText("metronome tick"); // ideally getByLabel wold be used but this element isolate aways from the main form
 
-    //     const submitButton = screen.getByTestId("submit-me");
-    //     fireEvent.click(submitButton);
+        expect(label).toHaveAttribute("for", "metronomeTick");
+    });
 
-    //     expect(await screen.findByText("error message unique")).toBeInTheDocument();
+    test("dropdown has proper default label for Forms", async () => {
+        render(<OurAddDropdownForm content={threeOptions} label="metronome tick" />);
 
-    // });
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        const label = screen.getByText("metronome tick"); // ideally getByLabel wold be used but this element isolate aways from the main form
 
-    // test("form is not invalid on match", async () => {
-    //     const {
-    //         register,
-    //         formState: { errors },
-    //         handleSubmit,
-    //     } = useForm(
-    //         { defaultValues: initialContents || {}, }
-    //     );
+        expect(label).toHaveAttribute("for", "label");
+    });
 
-    //     render(
-    //     <Form onSubmit={handleSubmit()}>
-    //         <Form.Group >
-    //             <OurAddDropdownForm content={threeOptions} label="empty" />
-    //             <Form.Control.Feedback type="invalid">
-    //                 {"error message unique"}
-    //             </Form.Control.Feedback>
-    //         </Form.Group>
-    //         <Button type="submit" data-testid="submit-me"/>
-    //     </Form>
-    //     );
+    test('options are rendered correctly with register function', async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={threeOptions} label="empty" register={register} />);
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        expect(register).toHaveBeenCalled();
+        //selection so the dropdown appears
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        fireEvent.select(submitField);
+        expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-0')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-1')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toBeInTheDocument();
+    });
 
-    //     expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
-    //     const submitField = screen.getByTestId('testid-test-dropdown-form');
-    //     fireEvent.change(submitField, { target: { value : 'choose me'} });
-    //     fireEvent.select(submitField);
+    test('options are not rendered after selection with register function', async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={threeOptions} label="empty" register={register}/>);
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        expect(register).toHaveBeenCalled();
 
-    //     expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
-    //     fireEvent.keyDown(submitField, {key: 'Enter', code: 'Enter'});
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        fireEvent.select(submitField);
 
-    //     const submitButton = screen.getByTestId("submit-me");
-    //     fireEvent.click(submitButton);
+        expect(await screen.findByTestId('testid-dropdown-form-option-0')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-1')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toBeInTheDocument();
 
-    //     expect(screen.queryByText("error message unique")).not.toBeInTheDocument();
+        const selectOption = screen.getByTestId('testid-dropdown-form-option-1');
+        fireEvent.click(selectOption);
 
-    // });
+        expect(screen.queryByTestId('testid-wrapper')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('testid-dropdown-form-option-0')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('testid-dropdown-form-option-1')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('testid-dropdown-form-option-2')).not.toBeInTheDocument();
+    });
+
+    test('selection changes after clicking on an option with register function', async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={threeOptions} label="empty" register={register}/>);
+        expect(register).toHaveBeenCalled();
+
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+
+        const submitField = screen.getByTestId('testid-test-dropdown-form');
+        fireEvent.select(submitField);
+
+        expect(await screen.findByTestId('testid-dropdown-form-option-0')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-1')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-2')).toBeInTheDocument();
+
+        const selectOption = screen.getByTestId('testid-dropdown-form-option-1');
+
+        fireEvent.click(selectOption);
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        fireEvent.click(submitField);
+
+        expect(await screen.findByTestId('testid-wrapper')).toBeInTheDocument();
+        expect(await screen.findByTestId('testid-dropdown-form-option-0')).toHaveStyle({backgroundColor: "green"});
+        expect(screen.queryByTestId('testid-dropdown-form-option-1')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('testid-dropdown-form-option-2')).not.toBeInTheDocument();
+    });
+
+    test('renders an empty dropdown element with no options and with register function', async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={[]} label="empty" register={register} />);
+        expect(register).toHaveBeenCalled();
+
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+
+        expect(screen.queryByTestId('testid-dropdown-form-option-0')).not.toBeInTheDocument();
+    });
+
+    test('testid is working with register function', async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={threeOptions} label="empty" testId={'metronome'} register={register}/>);
+        expect(await screen.findByTestId('metronome-test-dropdown-form')).toBeInTheDocument();
+        expect(register).toHaveBeenCalled();
+    });
+
+    test("empty content list with register is properly disabled", async () => {
+        const register = jest.fn();
+        render(<OurAddDropdownForm content={[]} label="empty" register={register}/>);
+        
+        expect(await screen.findByTestId('testid-test-dropdown-form')).toBeInTheDocument();
+        expect(screen.getByTestId('testid-test-dropdown-form')).toHaveAttribute("disabled");
+        expect(screen.getByTestId('testid-test-dropdown-form')).toHaveStyle({"cursor" : "not-allowed"});
+        expect(register).toHaveBeenCalled();
+    });
 
 });

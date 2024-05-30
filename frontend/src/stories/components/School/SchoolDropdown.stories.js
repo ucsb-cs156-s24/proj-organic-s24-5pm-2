@@ -8,7 +8,7 @@ export default {
     component: SchoolDropdown
 };
 
-const Template = () => <SchoolDropdown />;
+const Template = () => <SchoolDropdown register={null}/>;
 
 export const Empty = Template.bind({});
 Empty.parameters = {

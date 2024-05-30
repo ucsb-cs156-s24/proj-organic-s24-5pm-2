@@ -2,7 +2,7 @@ import { useBackend } from 'main/utils/useBackend';
 import React from "react";
 import OurAddDropdownForm from '../OurAddDropdownForm';
 
-export default function SchoolDropdown(){
+export default function SchoolDropdown({register}){
     const { data: schools, error: _error, status: _status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
@@ -26,7 +26,8 @@ export default function SchoolDropdown(){
             label="Name"
             testId="school-dropdown"
             basis={null}
-            register={null}
+            register={register}
+            htmlFor="name"
         ></OurAddDropdownForm>
     )
 }

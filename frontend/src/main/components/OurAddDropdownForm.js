@@ -125,14 +125,12 @@ export default function OurAddDropdownForm({
                     changeGhostContent(content[i]);
                     first = false;
                 }
-
                 // a direct match is found
                 // NOTE: THIS ASSUMES THAT ALL CONTENT IS UNIQUE
                 if(content[i].label === prefix){
                     changeSelectedContent(content[i]);
                     isValidSelection = true;
                 }
-
                 prefixedContent.push(content[i]);
             }
         }
@@ -172,81 +170,75 @@ export default function OurAddDropdownForm({
     return (
         <div>
             <Form.Label htmlFor={htmlFor}>{label}</Form.Label>
-            {content.length !== 0 && (
-                <div>
-                    {register !== null && (<Form.Control
+                {content.length !== 0 && register !== null  && (
+                    <Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
                         value={userTypedContent}
                         onChange={internalOnChange}
                         style={validationStyle}
-                        onFocus={() => {
-                            changeShowingDropdown(true);
-                        }}
-                        onClick={() => {
-                            changeShowingDropdown(true);
-                        }}
+                        onFocus={() => {changeShowingDropdown(true);}}
+                        onClick={() => {changeShowingDropdown(true);}}
                         onKeyDown={fillGhost}
                         {...register()}
-                    />)}
-                    {register === null && (<Form.Control
+                    />
+                )}
+                {content.length !== 0 && register === null && (
+                    <Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
                         value={userTypedContent}
                         onChange={internalOnChange}
                         style={validationStyle}
-                        onFocus={() => {
-                            changeShowingDropdown(true);
-                        }}
-                        onClick={() => {
-                            changeShowingDropdown(true);
-                        }}
+                        onFocus={() => {changeShowingDropdown(true);}}
+                        onClick={() => {changeShowingDropdown(true);}}
                         onKeyDown={fillGhost}
-                    />)}
-                    
-                    {showingDropdown && (
-                        <div data-testid = {`${testId}-wrapper`} style={optionWrapperStyle}>
-                            {filteredContent.map((obj) => {
-                                const key = obj.key;
-                                const innerLabel = obj.label;
-                                const select = () => {
-                                    changeSelectedContent(obj);
-                                    changeUserTypContent(innerLabel);
-                                    changeGhostContent(obj);
-
-                                    filterPrefix(innerLabel);
-                                    changeShowingDropdown(false);
-                                };
-                                return (
-                                    <DropdownOption
-                                        testid={`${testId}-dropdown-form-option-${count++}`}
-                                        label={innerLabel}
-                                        isSelected={
-                                            selectedContent &&
-                                            key === selectedContent.key
-                                        }
-                                        isGhost={ghostContent && key === ghostContent.key}
-                                        rawKey = {key}
-                                        // Stryker disable next-line all
-                                        key ={`${key}-dropdown-option`}
-                                        onClickFunc={select}
-                                    ></DropdownOption>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-            )}
-            {content.length === 0 && (
-                <div>
+                    />
+                )}
+                {showingDropdown && (
+                    <div data-testid = {`${testId}-wrapper`} style={optionWrapperStyle}>
+                        {filteredContent.map((obj) => {
+                            const key = obj.key;
+                            const innerLabel = obj.label;
+                            const select = () => {
+                                changeSelectedContent(obj);
+                                changeUserTypContent(innerLabel);
+                                changeGhostContent(obj);
+                                filterPrefix(innerLabel);
+                                changeShowingDropdown(false);
+                            };
+                            return (
+                                <DropdownOption
+                                    testid={`${testId}-dropdown-form-option-${count++}`}
+                                    label={innerLabel}
+                                    isSelected={selectedContent && key === selectedContent.key}
+                                    isGhost={ghostContent && key === ghostContent.key}
+                                    rawKey = {key}
+                                    // Stryker disable next-line all
+                                    key ={`${key}-dropdown-option`}
+                                    onClickFunc={select}
+                                ></DropdownOption>
+                            );
+                        })}
+                    </div>
+                )}
+                {content.length === 0 && register !== null && (
+                    <Form.Control
+                        data-testid={`${testId}-test-dropdown-form`}
+                        type="text"
+                        disabled={true}
+                        style={{ cursor: 'not-allowed' }}
+                        {...register()} // this would (intentionally) make a form impossible to submit as there are no schools in the system
+                    />
+                )}
+                {content.length === 0 && register === null && (
                     <Form.Control
                         data-testid={`${testId}-test-dropdown-form`}
                         type="text"
                         disabled={true}
                         style={{ cursor: 'not-allowed' }}
                     />
-                </div>
-            )}
+                )}
         </div>
     );
 }
