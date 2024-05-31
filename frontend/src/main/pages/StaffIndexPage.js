@@ -11,7 +11,6 @@ export default function StaffIndexPage() {
       <div className="pt-2">
         <h1>Index page for course {courseId} staff not yet implemented</h1>
         <p><a href={`/courses/${courseId}/staff/create`}>Create</a></p>
-        <p><a href={`/courses/${courseId}/staff/edit/1`}>Edit</a></p>
       </div>
     </BasicLayout>
   )

@@ -40,7 +40,6 @@ describe("PlaceholderIndexPage tests", () => {
         const regex = new RegExp(`Index page for course\\s+${courseId}\\s+staff not yet implemented`, 'i');
         expect(screen.getByText(regex)).toBeInTheDocument();
         expect(screen.getByText("Create")).toBeInTheDocument();
-        expect(screen.getByText("Edit")).toBeInTheDocument();
     });
 
 });
