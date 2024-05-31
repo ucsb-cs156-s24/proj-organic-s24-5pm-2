@@ -45,7 +45,6 @@ function App() {
     <>
       <Route path="/courses/create" element={<CoursesCreatePage />} />
       <Route path="/courses" element={<CourseIndexPage />} />
-      <Route path="/courses/edit/:id" element={<CoursesEditPage />} />
     </>
   ) : null;
 
