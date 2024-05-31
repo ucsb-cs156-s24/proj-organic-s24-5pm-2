@@ -17,7 +17,6 @@ import CoursesCreatePage from "main/pages/CoursesCreatePage";
 import CourseIndexPage from "main/pages/CourseIndexPage";
 
 import StaffCreatePage from "main/pages/StaffCreatePage";
-import StaffEditPage from "main/pages/StaffEditPage";
 import StaffIndexPage from "main/pages/StaffIndexPage";
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
@@ -45,6 +44,7 @@ function App() {
     <>
       <Route path="/courses/create" element={<CoursesCreatePage />} />
       <Route path="/courses" element={<CourseIndexPage />} />
+      <Route path="/courses/edit/:id" element={<CoursesEditPage />} />
     </>
   ) : null;
 
@@ -52,7 +52,6 @@ function App() {
     <>
       <Route path="/courses/:courseId/staff/create" element={<StaffCreatePage />} />
       <Route path="/courses/:courseId/staff" element={<StaffIndexPage />} />
-      <Route path="/courses/:courseId/staff/edit/:id" element={<StaffEditPage />} />
     </>
   ) : null;  
 
