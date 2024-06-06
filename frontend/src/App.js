@@ -15,6 +15,7 @@ import SchoolIndexPage from "main/pages/SchoolIndexPage";
 
 import CoursesCreatePage from "main/pages/CoursesCreatePage";
 import CourseIndexPage from "main/pages/CourseIndexPage";
+import CoursesShowPage from "main/pages/CoursesShowPage";
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import NotFoundPage from "main/pages/NotFoundPage";
@@ -42,6 +43,7 @@ function App() {
       <Route path="/courses/create" element={<CoursesCreatePage />} />
       <Route path="/courses" element={<CourseIndexPage />} />
       <Route path="/courses/edit/:id" element={<CoursesEditPage />} />
+      <Route path="/courses/:id" element={<CoursesShowPage />} />
     </>
   ) : null;
 

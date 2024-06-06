@@ -14,12 +14,14 @@ describe("AdminUsersPage tests",  () => {
 
     const axiosMock = new AxiosMockAdapter(axios);
 
-    const testId = "UsersTable"
+    const testId = "UsersTable";
 
-    beforeEach(()=>{
+    beforeEach(() => {
         axiosMock.reset();
         axiosMock.resetHistory();
         window.confirm = jest.fn(() => true); // Simulates user clicking "OK"
+        window.prompt = jest.fn(); // Mocking the prompt function
+        window.alert = jest.fn(); // Mocking the alert function
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/admin/users").reply(200, usersFixtures.threeUsers);
@@ -38,7 +40,7 @@ describe("AdminUsersPage tests",  () => {
         expect(await screen.findByText("Users")).toBeInTheDocument();
     });
 
-    test("user table toggle admin tests", async () => {
+    test("user table toggle admin tests for another user", async () => {
         axiosMock.onPost("/api/admin/users/toggleAdmin").reply(200, "User with id 1 has toggled admin status");
 
         render(
@@ -51,7 +53,7 @@ describe("AdminUsersPage tests",  () => {
 
         expect(await screen.findByText("Users")).toBeInTheDocument();
 
-        const toggleAdminButton = screen.getByTestId(`${testId}-cell-row-0-col-toggle-admin-button`);
+        const toggleAdminButton = screen.getByTestId(`${testId}-cell-row-1-col-toggle-admin-button`); // Not the current user
         expect(toggleAdminButton).toBeInTheDocument();
 
         fireEvent.click(toggleAdminButton);
@@ -62,11 +64,69 @@ describe("AdminUsersPage tests",  () => {
 
         expect(axiosMock.history.post.length).toBe(1);
         expect(axiosMock.history.post[0].url).toBe("/api/admin/users/toggleAdmin");
-        expect(axiosMock.history.post[0].params).toEqual({ githubId: 11111 });
-        
+        expect(axiosMock.history.post[0].params).toEqual({ githubId: 22222 });
     });
 
-    test("user table toggle instructor tests", async ()=>{
+    test("user table toggle admin tests for current user with correct confirmation", async () => {
+        axiosMock.onPost("/api/admin/users/toggleAdmin").reply(200, "User with id 1 has toggled admin status");
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminUsersPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Users")).toBeInTheDocument();
+
+        const toggleAdminButton = screen.getByTestId(`${testId}-cell-row-0-col-toggle-admin-button`); // Current user
+        expect(toggleAdminButton).toBeInTheDocument();
+
+        window.prompt.mockReturnValue(apiCurrentUserFixtures.adminUser.user.githubLogin);
+
+        fireEvent.click(toggleAdminButton);
+
+        await waitFor(() => {
+            expect(window.prompt).toHaveBeenCalledWith(
+                "WARNING! You are toggling admin status for yourself. Once you remove your own admin privileges you will not be able to give them back to yourself and will need another admin to give you privileges back. Please type your GitHub login to confirm:"
+            );
+        });
+
+        expect(axiosMock.history.post.length).toBe(1);
+        expect(axiosMock.history.post[0].url).toBe("/api/admin/users/toggleAdmin");
+        expect(axiosMock.history.post[0].params).toEqual({ githubId: 11111 });
+    });
+
+    test("user table toggle admin tests for current user with incorrect confirmation", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminUsersPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Users")).toBeInTheDocument();
+
+        const toggleAdminButton = screen.getByTestId(`${testId}-cell-row-0-col-toggle-admin-button`); // Current user
+        expect(toggleAdminButton).toBeInTheDocument();
+
+        window.prompt.mockReturnValue("wrongLogin");
+
+        fireEvent.click(toggleAdminButton);
+
+        await waitFor(() => {
+            expect(window.prompt).toHaveBeenCalledWith(
+                "WARNING! You are toggling admin status for yourself. Once you remove your own admin privileges you will not be able to give them back to yourself and will need another admin to give you privileges back. Please type your GitHub login to confirm:"
+            );
+        });
+
+        expect(window.alert).toHaveBeenCalledWith("Confirmation failed. Admin status not changed.");
+        expect(axiosMock.history.post.length).toBe(0);
+    });
+
+    test("user table toggle instructor tests", async () => {
         axiosMock.onPost("/api/admin/users/toggleInstructor").reply(200, "User with id 1 has toggled instructor status");
         
         render(
@@ -76,17 +136,18 @@ describe("AdminUsersPage tests",  () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
+
         const title = await screen.findByText("Users");
         expect(title).toBeInTheDocument();
 
         const toggleInstructorButton = screen.getByTestId(`${testId}-cell-row-0-col-toggle-instructor-button`);
         expect(toggleInstructorButton).toBeInTheDocument();
-  
+
         fireEvent.click(toggleInstructorButton);
 
         await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
         expect(window.confirm).toHaveBeenCalledWith("Are you sure you want to toggle the instructor status for this user?");
         expect(axiosMock.history.post[0].url).toBe("/api/admin/users/toggleInstructor");
-        expect(axiosMock.history.post[0].params).toEqual({githubId:11111});
+        expect(axiosMock.history.post[0].params).toEqual({ githubId: 11111 });
     });
 });

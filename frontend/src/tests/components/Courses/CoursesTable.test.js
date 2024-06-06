@@ -1,5 +1,5 @@
 import CoursesTable from "main/components/Courses/CoursesTable"
-import { fireEvent, render, waitFor, screen } from "@testing-library/react";
+import { fireEvent, render, waitFor, screen, within } from "@testing-library/react";
 import { coursesFixtures } from "fixtures/coursesFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -57,7 +57,7 @@ describe("UserTable tests", () => {
     const deleteButton = screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`);
     expect(deleteButton).not.toBeInTheDocument();
 
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3"); 
     expect(totalCoursesElement).toBeInTheDocument();
 
   });
@@ -66,13 +66,11 @@ describe("UserTable tests", () => {
   
   test("renders empty table correctly", () => {
 
-    // arrange
     const currentUser = currentUserFixtures.adminUser;
     const expectedHeaders = ["id", "Name", "School", "Term", "StartDate", "EndDate", "GitHub Org"];
     const expectedFields = ["id", "name", "school", "term", "startDate", "endDate", "githubOrg"];
     const testId = "CoursesTable";
     
-    // act
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -81,7 +79,6 @@ describe("UserTable tests", () => {
       </QueryClientProvider>
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -92,7 +89,7 @@ describe("UserTable tests", () => {
       expect(fieldElement).not.toBeInTheDocument();
     });
 
-    const totalCoursesElement = screen.getByText("Total Courses: 0"); // Since the table is empty
+    const totalCoursesElement = screen.getByText("Total Courses: 0");
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
@@ -138,7 +135,7 @@ describe("UserTable tests", () => {
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
 
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3");  
     expect(totalCoursesElement).toBeInTheDocument();
   });
 
@@ -264,9 +261,8 @@ describe("UserTable tests", () => {
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/courses/edit/1'));
     
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3"); 
     expect(totalCoursesElement).toBeInTheDocument();
-    
   });
 
 
@@ -290,8 +286,65 @@ describe("UserTable tests", () => {
 
     fireEvent.click(deleteButton);
 
-    const totalCoursesElement = screen.getByText("Total Courses: 3"); // Assuming there are 3 courses in the fixture
+    const totalCoursesElement = screen.getByText("Total Courses: 3");
     expect(totalCoursesElement).toBeInTheDocument();
   });
+
+  test("Has the expected column headers and renders hyperlinks for course IDs", () => {
+    const currentUser = currentUserFixtures.userOnly;
+  
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+  
+    coursesFixtures.threeCourses.forEach((course, index) => {
+      const idCell = screen.getByTestId(`CoursesTable-cell-row-${index}-col-id`);
+      const idLink = within(idCell).getByRole('link'); 
+  
+      expect(idLink).toHaveAttribute('href', `/courses/${course.id}`);
+    });
+  });
+  
+  test('ID link navigation occurs correctly', () => {
+    const currentUser = currentUserFixtures.userOnly;
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+          <MemoryRouter>
+              <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+          </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const firstIdCell = screen.getByTestId(`CoursesTable-cell-row-0-col-id`);
+    const idLink = within(firstIdCell).getByRole('link');
+
+    fireEvent.click(idLink); 
+    expect(mockedNavigate).toHaveBeenCalledWith(`/courses/${coursesFixtures.threeCourses[0].id}`);
+  });
+  
+  test('ID link has correct styles', () => {
+    const currentUser = currentUserFixtures.userOnly;
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+          <MemoryRouter>
+              <CoursesTable courses={coursesFixtures.threeCourses} currentUser={currentUser} />
+          </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const idCell = screen.getByTestId(`CoursesTable-cell-row-0-col-id`);
+    const idLink = within(idCell).getByRole('link');
+
+    expect(idLink).toHaveStyle({
+        cursor: "pointer",
+        color: "#007bff",
+        textDecoration: "underline"
+    });
+  });
+
 
 });

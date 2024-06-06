@@ -9,6 +9,10 @@ import React from "react";
 
      const navigate = useNavigate();
 
+     const idClickCallback = (cell) => {
+        navigate(`/courses/${cell.row.values.id}`);
+    };
+
      const joinCallback = (cell) => {
         navigate(`/courses/join/${cell.row.values.id}`);
     };
@@ -34,10 +38,22 @@ import React from "react";
      const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
 
      const columns = [
-         {
-             Header: 'id',
-             accessor: 'id',
-         },
+        {
+            Header: 'id',
+            accessor: 'id',
+            Cell: ({ cell }) => (
+                <a 
+                    href={`/courses/${cell.value}`}
+                    onClick={(e) => {
+                        e.preventDefault(); 
+                        idClickCallback(cell);
+                    }}
+                    style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" }}
+                >
+                    {cell.value}
+                </a>
+            )
+        },
          {
              Header: 'Name',
              accessor: 'name',
